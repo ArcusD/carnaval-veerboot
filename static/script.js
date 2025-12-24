@@ -18,8 +18,9 @@ async function updateData() {
 
 // 2. Wissel van halte op het scherm
 function roteerScherm() {
+    // Als de lijst leeg is (geen haltes ingevoerd in admin)
     if (haltes.length === 0) {
-        document.getElementById('huidige-halte').innerText = "Geen dienst";
+        document.getElementById('huidige-halte').innerText = "Geine deens"; // Zittesj
         return;
     }
 
@@ -33,24 +34,16 @@ function roteerScherm() {
     index++;
 }
 
-// 3. Een klokje (altijd fijn op een informatiebord)
+// 3. Een klokje
 function updateKlok() {
     const nu = new Date();
-    // Zorgt voor 14:05 ipv 14:5
     const tijd = nu.toLocaleTimeString('nl-NL', {hour: '2-digit', minute:'2-digit'}); 
     document.getElementById('klok').innerText = tijd;
 }
 
 // --- DE START ---
 
-// Start direct met data halen
 updateData();
-
-// Elke seconde de klok updaten
 setInterval(updateKlok, 1000);
-
-// Elke 5 seconden een nieuwe halte tonen
 setInterval(roteerScherm, 5000);
-
-// Elke 30 seconden checken of jij nieuwe haltes hebt toegevoegd in de admin
 setInterval(updateData, 30000);

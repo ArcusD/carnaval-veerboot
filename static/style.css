@@ -1,29 +1,50 @@
 body {
-    background-color: #003399; /* NS/Veerboot Blauw */
-    color: white;
+    background-color: #FFD700; /* Middenstuk: GEEL */
+    color: black;              /* Tekst op geel moet zwart zijn voor contrast */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    overflow: hidden; /* Geen scrollbalken */
+    overflow: hidden; 
     height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* De balk bovenin */
+/* --- DE BOVENBALK (ROOD) --- */
 header {
-    background-color: #ffcc00; /* Signaal Geel */
-    color: #003399;
-    padding: 10px 30px;
+    background-color: #D40000; /* Rood */
+    color: white;              /* Witte tekst */
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 2.5em; /* Lekker groot */
-    font-weight: bold;
-    height: 10vh;
+    height: 15vh;              /* Iets hoger gemaakt voor de grote tekst */
     box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
-/* Het middenstuk */
+/* De titel in het midden */
+#titel {
+    font-size: 3.5em;          /* Veel groter */
+    font-weight: 900;          /* Extra dikgedrukt */
+    text-transform: uppercase;
+    text-align: center;
+    flex-grow: 1;              /* Neemt alle ruimte in het midden */
+    text-shadow: 2px 2px 0px #000; /* Klein schaduwrandje voor leesbaarheid */
+}
+
+/* De klok rechts */
+#klok {
+    font-size: 2.5em;
+    font-weight: bold;
+    width: 200px;              /* Vaste breedte zodat titel niet verspringt */
+    text-align: right;
+}
+
+/* Onzichtbaar vlakje links (even breed als de klok) */
+.spacer {
+    width: 200px;
+}
+
+/* --- HET MIDDENSTUK (GEEL) --- */
 main {
     flex: 1;
     display: flex;
@@ -33,26 +54,40 @@ main {
     text-align: center;
 }
 
-/* De huidige halte (Groot) */
-#huidige-halte {
-    font-size: 8em; /* GIGANTISCH */
-    font-weight: bold;
-    text-transform: uppercase;
-    text-shadow: 4px 4px 0px #000;
-}
-
+/* "Volgende sjtop:" tekst */
 #volgende-tekst {
-    font-size: 2em;
-    color: #cccccc;
-    margin-top: 20px;
+    font-size: 4em;            /* Flink groter */
+    font-weight: bold;
+    color: #D40000;            /* Rood gemaakt, staat mooi op geel */
+    margin-bottom: 20px;
+    text-transform: uppercase;
 }
 
-/* De balk onderin (Optioneel) */
+/* De naam van de halte zelf */
+#huidige-halte {
+    font-size: 11em;           /* GIGANTISCH */
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 1.1;
+    /* Zwarte tekst met een wit randje eromheen voor extra 'pop' */
+    color: black;
+    text-shadow: 
+        3px 3px 0px white,
+        -1px -1px 0 white,  
+        1px -1px 0 white,
+        -1px 1px 0 white,
+        1px 1px 0 white;
+}
+
+/* --- DE ONDERBALK (GROEN) --- */
 footer {
-    background-color: #002266;
-    height: 5vh;
+    background-color: #009933; /* Groen */
+    color: white;              /* Witte tekst */
+    height: 8vh;
     display: flex;
     align-items: center;
-    padding-left: 20px;
-    font-size: 1.2em;
+    justify-content: center;   /* Footer tekst ook gecentreerd */
+    font-size: 1.8em;          /* Ook wat groter */
+    font-weight: bold;
+    text-transform: uppercase;
 }
