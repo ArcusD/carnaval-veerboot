@@ -15,12 +15,20 @@ def load_data():
     # Als het bestand niet bestaat, geven we een lege lijst terug
     if not os.path.exists(DATA_FILE):
         return []
-    with open(DATA_FILE, 'r') as f:
-        return json.load(f)
+    
+    # Hier voegen we encoding='utf-8' toe om 'ö' goed te lezen
+    try:
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        # Als het bestand leeg of kapot is, geven we een lege lijst terug
+        return []
 
 def save_data(data):
-    with open(DATA_FILE, 'w') as f:
-        json.dump(data, f, indent=4)
+    # Hier voegen we encoding='utf-8' toe EN ensure_ascii=False
+    # ensure_ascii=False zorgt dat hij 'ö' opslaat als 'ö' en niet als code
+    with open(DATA_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
 
 # --- ROUTES (De pagina's) ---
 
