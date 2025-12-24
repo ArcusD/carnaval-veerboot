@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Carnaval Admin</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; }
+        input { padding: 10px; width: 70%; font-size: 16px; }
+        button { padding: 10px; font-size: 16px; cursor: pointer; background: #0044cc; color: white; border: none;}
+        ul { list-style: none; padding: 0; }
+        li { background: #eee; margin: 5px 0; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .verwijder { background: red; margin-left: 10px; width: auto;}
+    </style>
+</head>
+<body>
+    <h1>Beheer Haltes</h1>
+    
+    <div>
+        <input type="text" id="nieuweHalte" placeholder="Typ naam halte...">
+        <button onclick="voegToe()">Toevoegen</button>
+    </div>
+
+    <ul id="lijst">
+        </ul>
+
+    <script>
+        // Dit stukje Javascript praat met jouw Python backend
+        let haltes = [];
+
+        // 1. Data ophalen bij het openen van de pagina
+        async function laadHaltes() {
+            const antwoord = await fetch('/api/haltes');
+            haltes = await antwoord.json();
+            tekenLijst();
+        }
+
+        // 2. De lijst op het scherm zetten
+        function tekenLijst() {
+            const lijst = document.getElementById('lijst');
+            lijst.innerHTML = ''; // Eerst leegmaken
+            
+            haltes.forEach((halte, index) => {
+                lijst.innerHTML += `
+                    <li>
+                        ${halte} 
+                        <button class="verwijder" onclick="verwijder(${index})">X</button>
+                    </li>`;
+            });
+        }
+
+        // 3. Opslaan naar Python
+        async function opslaan() {
+            await fetch('/api/haltes', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(haltes)
+            });
+            tekenLijst();
+        }
+
+        // 4. Nieuwe toevoegen
+        function voegToe() {
+            const veld = document.getElementById('nieuweHalte');
+            if (veld.value) {
+                haltes.push(veld.value);
+                veld.value = '';
+                opslaan();
+            }
+        }
+
+        // 5. Verwijderen
+        function verwijder(index) {
+            haltes.splice(index, 1);
+            opslaan();
+        }
+
+        // Starten maar!
+        laadHaltes();
+    </script>
+</body>
+</html>

@@ -361,3 +361,16 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Negeer de virtuele omgevingen
+venv/
+env/
+.env
+.venv
+miniconda3/
+
+# Negeer Python cache bestanden
+__pycache__/
+*.pyc
+
+# Negeer VS Code instellingen
+.vscode/
