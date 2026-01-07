@@ -92,3 +92,15 @@ footer {
     font-weight: bold;
     text-transform: uppercase;
 }
+/* De bewerk knop (Blauw) */
+.btn-bewerk {
+    background-color: #0044cc; /* Blauw */
+    padding: 10px 15px;
+    margin-left: 10px;
+}
+
+/* Zorg dat de knoppen netjes rechts blijven staan */
+.actie-knoppen {
+    display: flex;
+    gap: 5px;
+}
