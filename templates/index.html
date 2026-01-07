@@ -2,63 +2,25 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Carnaval Display</title>
+    <title>Carnavalswagen Display</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        /* Extra styling voor de lijst als die niet in style.css staat */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: sans-serif;
-            overflow: hidden;
-            background: #fff;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: #eee;
-            border-bottom: 5px solid #ccc;
-            font-size: 2em;
-        }
-
-        /* De lijst met haltes */
-        #haltes-container {
-            padding: 20px;
-            height: calc(100vh - 150px); /* Rest van het scherm */
-            overflow-y: auto; /* Scrollen als het te lang is */
-        }
-
-        .halte-item {
-            font-size: 3em; /* Lekker groot voor op de wagen */
-            padding: 20px;
-            border-bottom: 2px solid #eee;
-            color: #333;
-        }
-
-            .halte-item:first-child {
-                font-weight: bold;
-                color: #009933; /* De huidige halte is groen */
-            }
-
-                .halte-item:first-child::before {
-                    content: "👉 ";
-                }
-    </style>
 </head>
 <body>
 
-    <div id="main-content">
-        <header>
-            <div class="spacer" style="width: 280px;"></div> <div id="titel">🎉 Route 2026</div>
-            <div id="klok" style="width: 280px; text-align: right; font-weight: bold;">00:00</div>
-        </header>
+    <header>
+        <div class="spacer"></div>
+        <div id="titel">Eesjte Zittesje Vaerdeins</div>
+        <div id="klok">--:--</div>
+    </header>
 
-        <div id="haltes-container">
-        </div>
-    </div>
+    <main>
+        <div id="volgende-tekst">Volgende sjtop:</div>
+        <div id="huidige-halte">Laje...</div>
+    </main>
+
+    <footer>
+        Deze vaerdeins wurt aangebaoje door CV Opnuuj Begoosj
+    </footer>
 
     <div id="bier-overlay">
         <div id="bier-tekst-groot">HAAL<br>BIER</div>
@@ -74,37 +36,35 @@
         setInterval(updateKlok, 1000);
         updateKlok();
 
-        // 2. HALTES LADEN (Elke 5 seconden checken op updates)
-        async function laadHaltes() {
+        // 2. HALTE LADEN (Elke 3 seconden)
+        async function updateDisplay() {
             try {
+                // Haal de lijst op uit de Python backend
                 const response = await fetch('/api/haltes');
                 const haltes = await response.json();
 
-                const container = document.getElementById('haltes-container');
-                container.innerHTML = ''; // Maak leeg
+                const halteVeld = document.getElementById('huidige-halte');
+                const labelVeld = document.getElementById('volgende-tekst');
 
-                if (haltes.length === 0) {
-                    container.innerHTML = '<div class="halte-item">Geen haltes...</div>';
-                    return;
+                // Pak de EERSTE uit de lijst (index 0)
+                if (haltes.length > 0) {
+                    halteVeld.innerText = haltes[0];
+                    labelVeld.innerText = "Volgende sjtop:";
+                } else {
+                    // Lijst is leeg?
+                    halteVeld.innerText = "EINDE";
+                    labelVeld.innerText = "Tot volgend jaor!";
                 }
 
-                haltes.forEach((halte) => {
-                    // Maak een nieuw element voor elke halte
-                    const div = document.createElement('div');
-                    div.className = 'halte-item';
-                    div.innerText = halte;
-                    container.appendChild(div);
-                });
-
             } catch (e) {
-                console.error("Kon haltes niet laden:", e);
+                console.error("Kon halte niet laden:", e);
             }
         }
-        // Start direct en herhaal elke 5 sec
-        laadHaltes();
-        setInterval(laadHaltes, 5000);
+        // Start direct en herhaal
+        updateDisplay();
+        setInterval(updateDisplay, 3000);
 
-        // 3. BIER ALARM CHECK (Elke 2 seconden)
+        // 3. BIER ALARM (Elke 2 seconden)
         async function checkBierStatus() {
             try {
                 const response = await fetch('/api/bier_status');
@@ -124,7 +84,7 @@
             }
         }
         setInterval(checkBierStatus, 2000);
-
     </script>
+
 </body>
 </html>
