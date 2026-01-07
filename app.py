@@ -1,64 +1,67 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, jsonify, request
 import json
 import os
 import subprocess
+import socket
 
 app = Flask(__name__)
+DATA_FILE = 'haltes.json'
 
-# Bepaal de map waar app.py staat
-basedir = os.path.abspath(os.path.dirname(__file__))
-# Plak daar de bestandsnaam achteraan
-DATA_FILE = os.path.join(basedir, 'haltes.json')
+# --- NIEUW: STATUS VOOR HET BIER ALARM ---
+# We bewaren dit gewoon in het geheugen. Bij een reboot is het alarm uit.
+systeem_status = {
+    "bier_modus": False,
+    "bier_haalder": ""
+}
 
-# --- HULP FUNCTIES (Om het bestand te lezen/schrijven) ---
-
-def load_data():
-    # Als het bestand niet bestaat, geven we een lege lijst terug
-    if not os.path.exists(DATA_FILE):
-        return []
-    
-    # Hier voegen we encoding='utf-8' toe om 'ö' goed te lezen
-    try:
-        with open(DATA_FILE, 'r', encoding='utf-8') as f:
+# --- BESTAANDE CODE (Haltes laden/opslaan) ---
+def load_haltes():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, 'r') as f:
             return json.load(f)
-    except json.JSONDecodeError:
-        # Als het bestand leeg of kapot is, geven we een lege lijst terug
-        return []
+    return ["Start Optocht", "Einde"]
 
-def save_data(data):
-    # Hier voegen we encoding='utf-8' toe EN ensure_ascii=False
-    # ensure_ascii=False zorgt dat hij 'ö' opslaat als 'ö' en niet als code
-    with open(DATA_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
+def save_haltes(haltes):
+    with open(DATA_FILE, 'w') as f:
+        json.dump(haltes, f)
 
-# --- ROUTES (De pagina's) ---
+# --- ROUTES ---
 
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
 
 @app.route('/admin')
 def admin():
     return render_template('admin.html')
 
-# --- API (De achterkant die data stuurt) ---
+@app.route('/api/haltes', methods=['GET', 'POST'])
+def api_haltes():
+    if request.method == 'POST':
+        haltes = request.json
+        save_haltes(haltes)
+        return jsonify({"status": "success"})
+    return jsonify(load_haltes())
 
-# 1. Geef de haltes aan de browser
-@app.route('/api/haltes', methods=['GET'])
-def get_haltes():
-    return jsonify(load_data())
+# --- NIEUW: BIER ROUTES ---
 
-# 2. Sla nieuwe haltes op die we ontvangen
-@app.route('/api/haltes', methods=['POST'])
-def update_haltes():
-    nieuwe_lijst = request.json
-    save_data(nieuwe_lijst)
-    return jsonify({"status": "gelukt"})
+@app.route('/api/bier_status', methods=['GET'])
+def get_bier_status():
+    # Het scherm vraagt dit elke paar seconden op
+    return jsonify(systeem_status)
+
+@app.route('/api/set_bier', methods=['POST'])
+def set_bier():
+    data = request.json
+    systeem_status["bier_modus"] = data.get("actief", False)
+    systeem_status["bier_haalder"] = data.get("naam", "")
+    return jsonify({"status": "success", "huidige_status": systeem_status})
+
+# --- SYSTEM ROUTES (Update/Reboot/Shutdown/IP) ---
 
 @app.route('/api/update', methods=['POST'])
 def git_pull():
     try:
-        # Voer 'git pull' uit in de map waar we nu zijn
         result = subprocess.check_output(['git', 'pull'], text=True)
         return jsonify({"status": "success", "message": result})
     except Exception as e:
@@ -66,14 +69,28 @@ def git_pull():
 
 @app.route('/api/reboot', methods=['POST'])
 def reboot():
-    # Herstart de Pi (nodig om nieuwe Python code te laden)
     subprocess.Popen(['sudo', 'reboot'])
-    return jsonify({"status": "success", "message": "Rebooting..."})
+    return jsonify({"status": "success"})
 
 @app.route('/api/shutdown', methods=['POST'])
 def shutdown():
     subprocess.Popen(['sudo', 'poweroff'])
-    return jsonify({"status": "success", "message": "Systeem gaat uit..."})
+    return jsonify({"status": "success"})
+
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('8.8.8.8', 80))
+        IP = s.getsockname()[0]
+    except Exception:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
+
+@app.route('/api/ip')
+def api_ip():
+    return jsonify({"ip": get_ip()})
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000)

@@ -6,7 +6,7 @@
     <title>Carnaval Admin</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: sans-serif;
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
@@ -14,63 +14,70 @@
         }
 
         h1, h2 {
-            color: #333;
             text-align: center;
+            color: #333;
         }
 
-        .input-groep {
-            display: flex;
-            gap: 10px;
+        .vak {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
             margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .alarm-vak {
+            background: #ffe6e6;
+            border: 2px solid red;
         }
 
         input[type="text"] {
-            flex: 1;
-            padding: 15px;
+            width: 70%;
+            padding: 10px;
             font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
+            margin-right: 5px;
         }
 
         button {
-            padding: 15px;
+            padding: 10px 15px;
             font-size: 16px;
-            font-weight: bold;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
             color: white;
-            transition: opacity 0.2s;
+            margin: 5px 0;
         }
 
-            button:active {
-                opacity: 0.7;
-            }
-
-        .btn-toevoegen {
-            background-color: #009933;
+        .btn-groen {
+            background: #28a745;
         }
 
-        .btn-update {
-            background-color: #FF8C00;
+        .btn-rood {
+            background: #dc3545;
+        }
+
+        .btn-blauw {
+            background: #007bff;
+        }
+
+        .btn-oranje {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .btn-zwart {
+            background: #333;
             width: 100%;
-            margin-bottom: 10px;
         }
 
-        .btn-reboot {
-            background-color: #D40000;
+        /* Grote alarm knop */
+        .btn-alarm {
             width: 100%;
-        }
-
-        /* Actie knoppen in de lijst */
-        .btn-verwijder {
-            background-color: #D40000;
-            padding: 10px 15px;
-        }
-
-        .btn-bewerk {
-            background-color: #0044cc;
-            padding: 10px 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            padding: 15px;
+            margin-top: 10px;
+            background: #d9534f;
         }
 
         ul {
@@ -79,146 +86,105 @@
         }
 
         li {
-            background: white;
-            margin: 8px 0;
-            padding: 15px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            font-size: 18px;
-        }
-
-        /* Zorgt dat de tekst links staat en knoppen rechts */
-        .halte-naam {
-            flex: 1;
-            margin-right: 10px;
-            word-break: break-word;
-        }
-
-        .actie-knoppen {
-            display: flex;
-            gap: 8px;
-        }
-
-        .systeem-vak {
-            margin-top: 40px;
-            background: #e9ecef;
-            padding: 20px;
-            border-radius: 10px;
-            border-top: 4px solid #FFD700;
-        }
-
-        .status {
-            text-align: center;
-            font-style: italic;
-            margin-top: 10px;
-            color: #666;
         }
     </style>
 </head>
 <body>
 
-    <h1>🎭 Beheer Haltes</h1>
+    <h1>🎭 Beheer Wagen</h1>
 
-    <div class="input-groep">
-        <input type="text" id="nieuweHalte" placeholder="Typ naam halte...">
-        <button class="btn-toevoegen" onclick="voegToe()">+</button>
+    <div class="vak alarm-vak">
+        <h2 style="color: red; margin-top: 0;">🍺 Dorst Alarm</h2>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="bierNaam" placeholder="Wie moet bier halen?">
+        </div>
+        <button class="btn-alarm" onclick="zetBierAan()">🚨 HAAL BIER!</button>
+        <button class="btn-groen" onclick="zetBierUit()" style="width: 100%; margin-top: 10px;">✅ Terug naar Normaal</button>
     </div>
 
-    <ul id="lijst"></ul>
+    <div class="vak">
+        <h2>📍 Route & Haltes</h2>
+        <div style="display: flex;">
+            <input type="text" id="nieuweHalte" placeholder="Nieuwe halte...">
+            <button class="btn-groen" onclick="voegToe()">+</button>
+        </div>
+        <ul id="lijst"></ul>
+    </div>
 
-    <div class="systeem-vak">
-        <h2>🛠️ Systeembeheer</h2>
-        <button class="btn-update" onclick="doeUpdate()">🔄 Update Code (Git Pull)</button>
-        <button class="btn-reboot" onclick="doeReboot()">🔌 Herstart Pi (Reboot)</button>
-        <button class="btn-shutdown" onclick="doeShutdown()" style="background-color: #333; margin-top: 10px; width: 100%;">⚫ Veilig Uitschakelen</button>
-        <p id="status-tekst" class="status"></p>
+    <div class="vak" style="background: #e9ecef;">
+        <h2>🛠️ Systeem</h2>
+        <button class="btn-oranje" onclick="doeUpdate()" style="width:100%">🔄 Update Code</button>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button class="btn-rood" onclick="doeReboot()" style="flex: 1;">🔌 Herstarten</button>
+            <button class="btn-zwart" onclick="doeShutdown()" style="flex: 1;">⚫ Uitschakelen</button>
+        </div>
+        <p id="status-tekst" style="text-align: center; font-style: italic; font-size: 0.9em;"></p>
     </div>
 
     <script>
         let haltes = [];
 
+        // --- BIER FUNCTIES ---
+        async function zetBierAan() {
+            const naam = document.getElementById('bierNaam').value;
+            if (!naam) { alert("Vul eerst een naam in!"); return; }
+
+            await fetch('/api/set_bier', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ actief: true, naam: naam })
+            });
+            alert("🚨 ALARM GEACTIVEERD! Het scherm knippert nu.");
+        }
+
+        async function zetBierUit() {
+            await fetch('/api/set_bier', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ actief: false })
+            });
+            alert("✅ Scherm is weer normaal.");
+        }
+
+        // --- HALTE FUNCTIES ---
         async function laadHaltes() {
-            try {
-                const antwoord = await fetch('/api/haltes');
-                haltes = await antwoord.json();
-                tekenLijst();
-            } catch (e) { console.error("Kon niet laden", e); }
+            const r = await fetch('/api/haltes'); haltes = await r.json(); tekenLijst();
         }
 
         function tekenLijst() {
-            const lijst = document.getElementById('lijst');
-            lijst.innerHTML = '';
-
-            haltes.forEach((halte, index) => {
-                lijst.innerHTML += `
-                            <li>
-                                <span class="halte-naam">${halte}</span>
-                                <div class="actie-knoppen">
-                                    <button class="btn-bewerk" onclick="bewerk(${index})">✏️</button>
-                                    <button class="btn-verwijder" onclick="verwijder(${index})">X</button>
-                                </div>
-                            </li>`;
+            const l = document.getElementById('lijst'); l.innerHTML = '';
+            haltes.forEach((h, i) => {
+                l.innerHTML += `<li>${h} <div><button class="btn-blauw" onclick="bewerk(${i})">✏️</button> <button class="btn-rood" onclick="verwijder(${i})">X</button></div></li>`;
             });
         }
 
         async function opslaan() {
-            await fetch('/api/haltes', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(haltes)
-            });
+            await fetch('/api/haltes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(haltes) });
             tekenLijst();
         }
 
         function voegToe() {
-            const veld = document.getElementById('nieuweHalte');
-            if (veld.value) {
-                haltes.push(veld.value);
-                veld.value = '';
-                opslaan();
-            }
+            const v = document.getElementById('nieuweHalte');
+            if (v.value) { haltes.push(v.value); v.value = ''; opslaan(); }
         }
 
-        function bewerk(index) {
-            const oudeNaam = haltes[index];
-            const nieuweNaam = prompt("Pas de naam aan:", oudeNaam);
-            if (nieuweNaam !== null && nieuweNaam.trim() !== "") {
-                haltes[index] = nieuweNaam;
-                opslaan();
-            }
-        }
+        function verwijder(i) { if (confirm("Verwijderen?")) { haltes.splice(i, 1); opslaan(); } }
+        function bewerk(i) { const n = prompt("Nieuwe naam:", haltes[i]); if (n) { haltes[i] = n; opslaan(); } }
 
-        function verwijder(index) {
-            if (!confirm("Weet je zeker dat je '" + haltes[index] + "' wilt verwijderen?")) return;
-            haltes.splice(index, 1);
-            opslaan();
-        }
-
-        // Systeemfuncties
+        // --- SYSTEEM FUNCTIES ---
         async function doeUpdate() {
-            const s = document.getElementById('status-tekst'); s.innerText = "⏳ Bezig...";
-            try {
-                const r = await fetch('/api/update', { method: 'POST' });
-                const d = await r.json();
-                if (d.status === 'success') { alert("✅ Update gelukt!"); s.innerText = "Klaar. Herstart nu."; }
-                else { alert("❌ Fout: " + d.message); s.innerText = "Fout."; }
-            } catch (e) { alert("Error: " + e); }
+            document.getElementById('status-tekst').innerText = "Bezig...";
+            await fetch('/api/update', { method: 'POST' });
+            alert("Update klaar!");
         }
-
-        async function doeReboot() {
-            if (!confirm("⚠️ Scherm gaat op zwart. Doorgaan?")) return;
-            fetch('/api/reboot', { method: 'POST' });
-            alert("Pi herstart nu. Wacht 1 minuut.");
-        }
-        async function doeShutdown() {
-            if (!confirm("⚠️ Weet je zeker dat je de wagen wilt uitschakelen? Je moet de stroom eraf halen en er weer op doen om hem weer te starten.")) return;
-
-            fetch('/api/shutdown', { method: 'POST' });
-            alert("Het systeem sluit nu af. Wacht tot het scherm zwart is en haal dan de stroom eraf.");
-        }
+        function doeReboot() { if (confirm("Herstarten?")) fetch('/api/reboot', { method: 'POST' }); }
+        function doeShutdown() { if (confirm("Uitschakelen?")) fetch('/api/shutdown', { method: 'POST' }); }
 
         laadHaltes();
     </script>

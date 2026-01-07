@@ -2,28 +2,59 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Carnavalswagen Display</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>Carnaval Display</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-    <header>
-        <div class="spacer"></div>
-        
-        <div id="titel">Eesjte Zittesje Vaerdeins</div>
-        
-        <div id="klok">--:--</div>
-    </header>
+    <div id="normale-content">
+        <header>
+            <div class="spacer"></div>
+            <h1>Carnaval 2026</h1>
+            <div id="klok">00:00</div>
+        </header>
 
-    <main>
-        <div id="volgende-tekst">Volgende sjtop:</div>
-        <div id="huidige-halte">Laje...</div>
-    </main>
+    </div>
 
-    <footer>
-        Deze vaerdeins wurt aangebaoje door CV Opnuuj Begoosj
-    </footer>
 
-    <script src="/static/script.js"></script>
+    <div id="bier-overlay">
+        <div id="bier-tekst-groot">HAAL<br>BIER</div>
+        <div id="bier-naam-tekst">NAAM</div>
+    </div>
+
+
+    <script>
+        // Checkt elke 2 seconden of het alarm aan staat
+        setInterval(checkBierStatus, 2000);
+
+        async function checkBierStatus() {
+            try {
+                const response = await fetch('/api/bier_status');
+                const data = await response.json();
+
+                const overlay = document.getElementById('bier-overlay');
+                const naamVeld = document.getElementById('bier-naam-tekst');
+
+                if (data.bier_modus === true) {
+                    // ALARM AAN!
+                    overlay.style.display = 'flex'; // Laat zien
+                    naamVeld.innerText = data.bier_haalder; // Zet naam erin
+                } else {
+                    // ALARM UIT
+                    overlay.style.display = 'none'; // Verberg
+                }
+            } catch (e) {
+                console.log("Kon status niet checken", e);
+            }
+        }
+
+        // --- Je bestaande klok code hieronder laten staan ---
+        function updateKlok() {
+            const nu = new Date();
+            document.getElementById('klok').innerText = nu.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+        }
+        setInterval(updateKlok, 1000);
+        updateKlok();
+    </script>
 </body>
 </html>
