@@ -70,5 +70,10 @@ def reboot():
     subprocess.Popen(['sudo', 'reboot'])
     return jsonify({"status": "success", "message": "Rebooting..."})
 
+@app.route('/api/shutdown', methods=['POST'])
+def shutdown():
+    subprocess.Popen(['sudo', 'poweroff'])
+    return jsonify({"status": "success", "message": "Systeem gaat uit..."})
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

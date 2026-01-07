@@ -133,6 +133,7 @@
         <h2>🛠️ Systeembeheer</h2>
         <button class="btn-update" onclick="doeUpdate()">🔄 Update Code (Git Pull)</button>
         <button class="btn-reboot" onclick="doeReboot()">🔌 Herstart Pi (Reboot)</button>
+        <button class="btn-shutdown" onclick="doeShutdown()" style="background-color: #333; margin-top: 10px; width: 100%;">⚫ Veilig Uitschakelen</button>
         <p id="status-tekst" class="status"></p>
     </div>
 
@@ -211,6 +212,12 @@
             if (!confirm("⚠️ Scherm gaat op zwart. Doorgaan?")) return;
             fetch('/api/reboot', { method: 'POST' });
             alert("Pi herstart nu. Wacht 1 minuut.");
+        }
+        async function doeShutdown() {
+            if (!confirm("⚠️ Weet je zeker dat je de wagen wilt uitschakelen? Je moet de stroom eraf halen en er weer op doen om hem weer te starten.")) return;
+
+            fetch('/api/shutdown', { method: 'POST' });
+            alert("Het systeem sluit nu af. Wacht tot het scherm zwart is en haal dan de stroom eraf.");
         }
 
         laadHaltes();
