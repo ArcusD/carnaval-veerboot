@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import json
 import os
+import subprocess
 
 app = Flask(__name__)
 
@@ -53,6 +54,21 @@ def update_haltes():
     nieuwe_lijst = request.json
     save_data(nieuwe_lijst)
     return jsonify({"status": "gelukt"})
+
+@app.route('/api/update', methods=['POST'])
+def git_pull():
+    try:
+        # Voer 'git pull' uit in de map waar we nu zijn
+        result = subprocess.check_output(['git', 'pull'], text=True)
+        return jsonify({"status": "success", "message": result})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/reboot', methods=['POST'])
+def reboot():
+    # Herstart de Pi (nodig om nieuwe Python code te laden)
+    subprocess.Popen(['sudo', 'reboot'])
+    return jsonify({"status": "success", "message": "Rebooting..."})
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

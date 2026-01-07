@@ -1,63 +1,172 @@
 <!DOCTYPE html>
-<html>
+<html lang="nl">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carnaval Admin</title>
     <style>
-        body { font-family: sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; }
-        input { padding: 10px; width: 70%; font-size: 16px; }
-        button { padding: 10px; font-size: 16px; cursor: pointer; background: #0044cc; color: white; border: none;}
-        ul { list-style: none; padding: 0; }
-        li { background: #eee; margin: 5px 0; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .verwijder { background: red; margin-left: 10px; width: auto;}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        /* Het invoerveld */
+        .input-groep {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        /* Algemene knop stijlen */
+        button {
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.2s;
+        }
+
+            button:active {
+                opacity: 0.7;
+            }
+
+        /* Specifieke knoppen */
+        .btn-toevoegen {
+            background-color: #009933; /* Groen */
+        }
+
+        .btn-verwijder {
+            background-color: #D40000; /* Rood */
+            padding: 10px 15px;
+            margin-left: 10px;
+        }
+
+        .btn-update {
+            background-color: #FF8C00; /* Oranje */
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn-reboot {
+            background-color: #D40000; /* Rood */
+            width: 100%;
+        }
+
+        /* De lijst */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: white;
+            margin: 8px 0;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 18px;
+        }
+
+        /* Systeem vak */
+        .systeem-vak {
+            margin-top: 40px;
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            border-top: 4px solid #FFD700; /* Geel randje */
+        }
+
+        .status {
+            text-align: center;
+            font-style: italic;
+            margin-top: 10px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
-    <h1>Beheer Haltes</h1>
-    
-    <div>
+
+    <h1>🎭 Beheer Haltes</h1>
+
+    <div class="input-groep">
         <input type="text" id="nieuweHalte" placeholder="Typ naam halte...">
-        <button onclick="voegToe()">Toevoegen</button>
+        <button class="btn-toevoegen" onclick="voegToe()">+</button>
     </div>
 
     <ul id="lijst">
-        </ul>
+    </ul>
+
+    <div class="systeem-vak">
+        <h2>🛠️ Systeembeheer</h2>
+        <p style="text-align: center; font-size: 0.9em; margin-bottom: 15px;">
+            Gebruik dit om nieuwe kleuren/teksten van GitHub te halen.
+        </p>
+
+        <button class="btn-update" onclick="doeUpdate()">🔄 Update Code (Git Pull)</button>
+        <button class="btn-reboot" onclick="doeReboot()">🔌 Herstart Pi (Reboot)</button>
+
+        <p id="status-tekst" class="status"></p>
+    </div>
 
     <script>
-        // Dit stukje Javascript praat met jouw Python backend
         let haltes = [];
 
-        // 1. Data ophalen bij het openen van de pagina
+        // --- 1. HALTES BEHEREN ---
+
         async function laadHaltes() {
-            const antwoord = await fetch('/api/haltes');
-            haltes = await antwoord.json();
-            tekenLijst();
+            try {
+                const antwoord = await fetch('/api/haltes');
+                haltes = await antwoord.json();
+                tekenLijst();
+            } catch (e) {
+                console.error("Kon niet laden", e);
+            }
         }
 
-        // 2. De lijst op het scherm zetten
         function tekenLijst() {
             const lijst = document.getElementById('lijst');
-            lijst.innerHTML = ''; // Eerst leegmaken
-            
+            lijst.innerHTML = '';
+
             haltes.forEach((halte, index) => {
                 lijst.innerHTML += `
-                    <li>
-                        ${halte} 
-                        <button class="verwijder" onclick="verwijder(${index})">X</button>
-                    </li>`;
+                            <li>
+                                ${halte}
+                                <button class="btn-verwijder" onclick="verwijder(${index})">X</button>
+                            </li>`;
             });
         }
 
-        // 3. Opslaan naar Python
         async function opslaan() {
             await fetch('/api/haltes', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(haltes)
             });
             tekenLijst();
         }
 
-        // 4. Nieuwe toevoegen
         function voegToe() {
             const veld = document.getElementById('nieuweHalte');
             if (veld.value) {
@@ -67,13 +176,44 @@
             }
         }
 
-        // 5. Verwijderen
         function verwijder(index) {
+            if (!confirm("Weet je zeker dat je '" + haltes[index] + "' wilt verwijderen?")) return;
             haltes.splice(index, 1);
             opslaan();
         }
 
-        // Starten maar!
+        // --- 2. SYSTEEM BEHEREN ---
+
+        async function doeUpdate() {
+            const statusVeld = document.getElementById('status-tekst');
+            statusVeld.innerText = "⏳ Bezig met Git Pull...";
+
+            try {
+                const response = await fetch('/api/update', { method: 'POST' });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    alert("✅ Update gelukt!\n\nMelding: " + data.message);
+                    statusVeld.innerText = "Update klaar. Klik nu op 'Herstart Pi' om de wijzigingen te zien.";
+                } else {
+                    alert("❌ Fout: " + data.message);
+                    statusVeld.innerText = "Er ging iets mis.";
+                }
+            } catch (e) {
+                alert("Kon update niet starten: " + e);
+                statusVeld.innerText = "Verbindingsfout.";
+            }
+        }
+
+        async function doeReboot() {
+            if (!confirm("⚠️ Let op: Het scherm in de wagen gaat nu op zwart en start opnieuw op. Doorgaan?")) return;
+
+            fetch('/api/reboot', { method: 'POST' });
+            document.getElementById('status-tekst').innerText = "Pi is aan het herstarten... even geduld.";
+            alert("De Pi herstart nu. Wacht ongeveer 1 minuut en ververs dan deze pagina.");
+        }
+
+        // Starten bij laden pagina
         laadHaltes();
     </script>
 </body>
