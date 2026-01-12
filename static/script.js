@@ -41,7 +41,7 @@
     elKomLst.innerHTML = "";
 
     const filled = items.filter(Boolean);
-    const show = filled.length ? filled : ["—", "—", "—"];
+    const show = filled.length ? filled : ["â€”", "â€”", "â€”"];
 
     show.slice(0, 3).forEach((t) => {
       const li = document.createElement('li');
@@ -71,7 +71,7 @@
 
   function render() {
     if (!Array.isArray(haltes) || haltes.length === 0) {
-      elLabel.textContent = "Völgende sjtop";
+      elLabel.textContent = "VÃ¶lgende sjtop";
       elHalte.textContent = "Gein sjtoppe";
       if (elKomLbl) elKomLbl.textContent = "Dao nao:";
       setUpcoming([]);
@@ -81,8 +81,8 @@
 
     if (idx >= haltes.length) idx = 0;
 
-    const current = clean(haltes[idx]) || "—";
-    elLabel.textContent = "Völgende sjtop";
+    const current = clean(haltes[idx]) || "â€”";
+    elLabel.textContent = "VÃ¶lgende sjtop";
     elHalte.textContent = current;
 
     // Volgende 3 sjtoppe
