@@ -6,29 +6,60 @@
     <title>Eesjte Zittesje Vaerdeins</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="carnaval">
 
+<body class="carnaval">
     <header class="topbar">
-        <div class="spacer" aria-hidden="true">🎭</div>
+        <div class="topbar-left" aria-hidden="true">🎭</div>
         <div id="titel">Eesjte Zittesje Vaerdeins</div>
         <div id="klok" aria-label="Kloek">--:--</div>
     </header>
 
     <main>
         <section class="board" role="region" aria-label="Veerdèins-infoo">
-            <div class="label" id="volgende-tekst">Völgende sjtop</div>
+            <div class="board-grid">
 
-            <div id="halte-wrap">
-                <div id="huidige-halte">Laje...</div>
-            </div>
+                <!-- LINKS: HALTES -->
+                <div class="panel panel-main">
+                    <div class="current-head">
+                        <div class="label" id="volgende-tekst">Völgende sjtop</div>
+                    </div>
 
-            <div id="komend" aria-label="Kómende sjtoppe">
-                <span id="komend-label">Dao nao:</span>
-                <ul id="komende-lijst" aria-label="Lies van kómende sjtoppe">
-                    <li>—</li>
-                    <li>—</li>
-                    <li>—</li>
-                </ul>
+                    <div class="current-name-wrap" id="halte-wrap" aria-label="Huidige sjtop">
+                        <div id="huidige-halte">Laje...</div>
+                    </div>
+
+                    <div class="route-box" aria-label="Sjtoppe">
+                        <div class="route-title">Sjtoppe</div>
+
+                        <div class="route-window" id="route-window">
+                            <ul id="halte-lijst" class="route-list" aria-label="Lies vaan sjtoppe"></ul>
+                        </div>
+
+                        <div class="route-hint">De markeerde sjtop is noe</div>
+                    </div>
+                </div>
+
+                <!-- RECHTS: AANKOMEND -->
+                <aside class="panel panel-side" aria-label="Kómend">
+                    <div class="side-title">Kómend</div>
+
+                    <div class="upcoming">
+                        <div class="rail" aria-hidden="true"></div>
+
+                        <div class="up-item">
+                            <div class="up-rank">1</div>
+                            <div class="up-name" id="up1">—</div>
+                        </div>
+
+                        <div class="up-item">
+                            <div class="up-rank">2</div>
+                            <div class="up-name" id="up2">—</div>
+                        </div>
+                    </div>
+
+                    <div class="side-note">Vasteloavend: sjpringe, zinge, laache 🎺</div>
+                </aside>
+
             </div>
         </section>
     </main>
@@ -37,6 +68,7 @@
         Dees veerdèins wurt aangebaoje door CV Opnuuj Begoosj
     </footer>
 
+    <!-- BIER OVERLAY -->
     <div id="bier-overlay" aria-hidden="true">
         <div class="bier-kaart">
             <div id="bier-tekst-groot">HAOL<br>BIER</div>
