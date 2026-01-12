@@ -18,8 +18,8 @@
         <section class="board" role="region" aria-label="Veerdèins-infoo">
             <div class="board-grid">
 
-                <!-- LINKS: HALTES -->
-                <div class="panel panel-main">
+                <!-- LINKS: HUIDIGE HALTE (PROMINENT) -->
+                <div class="panel panel-current">
                     <div class="current-head">
                         <div class="label" id="volgende-tekst">Völgende sjtop</div>
                     </div>
@@ -27,37 +27,14 @@
                     <div class="current-name-wrap" id="halte-wrap" aria-label="Huidige sjtop">
                         <div id="huidige-halte">Laje...</div>
                     </div>
-
-                    <div class="route-box" aria-label="Sjtoppe">
-                        <div class="route-title">Sjtoppe</div>
-
-                        <div class="route-window" id="route-window">
-                            <ul id="halte-lijst" class="route-list" aria-label="Lies vaan sjtoppe"></ul>
-                        </div>
-
-                        <div class="route-hint">De markeerde sjtop is noe</div>
-                    </div>
                 </div>
 
-                <!-- RECHTS: AANKOMEND -->
-                <aside class="panel panel-side" aria-label="Kómend">
-                    <div class="side-title">Kómend</div>
-
-                    <div class="upcoming">
-                        <div class="rail" aria-hidden="true"></div>
-
-                        <div class="up-item">
-                            <div class="up-rank">1</div>
-                            <div class="up-name" id="up1">—</div>
-                        </div>
-
-                        <div class="up-item">
-                            <div class="up-rank">2</div>
-                            <div class="up-name" id="up2">—</div>
-                        </div>
+                <!-- RECHTS: SJTOPPE-LIJST -->
+                <aside class="panel panel-route" aria-label="Sjtoppe">
+                    <div class="route-title">Sjtoppe</div>
+                    <div class="route-window" id="route-window">
+                        <ul id="halte-lijst" class="route-list" aria-label="Lies vaan sjtoppe"></ul>
                     </div>
-
-                    <div class="side-note">Vasteloavend: sjpringe, zinge, laache 🎺</div>
                 </aside>
 
             </div>

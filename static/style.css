@@ -1,11 +1,10 @@
 :root {
-    /* Sittard-kleure */
     --rood: #d40000;
     --geel: #ffd400;
     --greun: #009933;
     --zwart: #101015;
     --wit: #ffffff;
-    --shadow: 0 14px 46px rgba(0,0,0,.28);
+    --shadow: 0 16px 54px rgba(0,0,0,.30);
     --soft: 0 10px 26px rgba(0,0,0,.16);
 }
 
@@ -21,12 +20,12 @@ body {
     flex-direction: column;
     font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
     color: var(--zwart);
-    /* ✅ CONFETTI ALTIJD: zit nú in de body background (geen overlay/paint-hickups) */
+    /* confetti ALTIJD in background */
     background: radial-gradient(circle, rgba(212,0,0,.95) 0 5px, transparent 6px) 0 0/70px 70px, radial-gradient(circle, rgba(0,153,51,.95) 0 5px, transparent 6px) 22px 34px/86px 86px, radial-gradient(circle, rgba(255,212,0,.95) 0 5px, transparent 6px) 44px 10px/78px 78px, radial-gradient(circle, rgba(16,16,21,.35) 0 4px, transparent 5px) 12px 58px/110px 110px, radial-gradient(circle at 20% 12%, rgba(255,255,255,.55), transparent 55%), radial-gradient(circle at 85% 25%, rgba(255,255,255,.35), transparent 60%), linear-gradient(180deg, var(--geel) 0%, rgba(255,239,133,1) 45%, var(--geel) 100%);
     background-attachment: fixed;
 }
 
-/* --- HEADER --- */
+/* HEADER */
 .topbar {
     position: relative;
     height: 16vh;
@@ -85,7 +84,7 @@ body {
     text-align: center;
 }
 
-/* --- MAIN --- */
+/* MAIN */
 main {
     flex: 1;
     display: flex;
@@ -107,7 +106,7 @@ main {
 
 .board-grid {
     display: grid;
-    grid-template-columns: 1.6fr 1fr;
+    grid-template-columns: 1.35fr 1fr; /* current groter */
     gap: min(2.6vw, 22px);
     align-items: stretch;
 }
@@ -117,15 +116,14 @@ main {
     background: rgba(255,255,255,.26);
     border: 3px solid rgba(0,0,0,.08);
     box-shadow: 0 10px 24px rgba(0,0,0,.12);
-    padding: min(2.6vh, 22px) min(2.2vw, 20px);
+    padding: min(2.8vh, 24px) min(2.4vw, 22px);
 }
 
-/* --- LABEL: GROEN/GEEL (geen blauw) --- */
+/* Label groen/geel */
 .label {
     display: inline-flex;
     align-items: center;
-    gap: .6em;
-    padding: .36em .92em;
+    padding: .38em 1.0em;
     border-radius: 999px;
     font-weight: 950;
     text-transform: uppercase;
@@ -139,34 +137,52 @@ main {
 .current-head {
     display: flex;
     justify-content: center;
-    margin-bottom: min(1.6vh, 12px);
+    margin-bottom: min(1.8vh, 12px);
 }
 
-/* --- HUIDIGE HALTE (dynamisch) --- */
+/* CURRENT: extra prominent */
+.panel-current {
+    position: relative;
+    overflow: hidden;
+}
+
+    .panel-current::before {
+        content: "";
+        position: absolute;
+        inset: -40%;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), transparent 55%), radial-gradient(circle at 70% 40%, rgba(255,255,255,.35), transparent 58%), radial-gradient(circle at 55% 70%, rgba(255,212,0,.32), transparent 60%);
+        transform: rotate(6deg);
+        pointer-events: none;
+    }
+
 .current-name-wrap {
-    padding: min(1.6vh, 14px) min(1.8vw, 16px);
-    border-radius: 20px;
-    background: rgba(255,255,255,.30);
-    box-shadow: 0 10px 22px rgba(0,0,0,.10);
-    min-height: clamp(110px, 18vh, 220px);
+    position: relative;
+    z-index: 1;
+    padding: min(2.2vh, 18px) min(2.2vw, 18px);
+    border-radius: 22px;
+    /* carnaval rand */
+    background: linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,.18)) padding-box, linear-gradient(90deg, var(--rood), var(--geel), var(--greun), var(--rood)) border-box;
+    border: 5px solid transparent;
+    box-shadow: 0 18px 44px rgba(0,0,0,.16);
+    min-height: clamp(170px, 30vh, 340px);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 #huidige-halte {
-    font-weight: 950;
+    font-weight: 1000;
     text-transform: uppercase;
-    line-height: 1.06;
-    font-size: clamp(2.2rem, 6.8vw, 5.8rem);
+    line-height: 1.02;
+    /* GROTER */
+    font-size: clamp(3.2rem, 8.8vw, 7.6rem);
     color: var(--zwart);
-    text-shadow: 0.08em 0.08em 0 rgba(255,255,255,.90), 0 0 18px rgba(0,0,0,.16);
-    letter-spacing: .02em;
-    /* lange woorden: nooit eruit vallen */
+    text-shadow: 0.08em 0.08em 0 rgba(255,255,255,.92), 0 0 26px rgba(0,0,0,.18);
+    letter-spacing: .03em;
+    text-align: center;
     overflow-wrap: anywhere;
     word-break: break-word;
     hyphens: auto;
-    text-align: center;
 }
 
     #huidige-halte.pop {
@@ -180,7 +196,7 @@ main {
     }
 
     70% {
-        transform: translateY(0) scale(1.02);
+        transform: translateY(0) scale(1.03);
         filter: blur(0);
     }
 
@@ -189,35 +205,32 @@ main {
     }
 }
 
-/* --- ROUTE LIST (bewegend) --- */
-.route-box {
-    margin-top: min(2.6vh, 18px);
-    border-radius: 20px;
-    background: rgba(255,255,255,.26);
-    border: 2px solid rgba(0,0,0,.06);
-    padding: min(1.8vh, 14px) min(1.8vw, 14px);
+/* ROUTE LIST */
+.panel-route {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .route-title {
     font-weight: 950;
     text-transform: uppercase;
-    letter-spacing: .05em;
+    letter-spacing: .06em;
     color: var(--rood);
-    font-size: clamp(1.0rem, 2.0vw, 1.6rem);
-    margin-bottom: 10px;
+    font-size: clamp(1.2rem, 2.4vw, 2.0rem);
     text-align: center;
 }
 
 .route-window {
     position: relative;
     overflow: hidden;
-    border-radius: 16px;
+    border-radius: 18px;
     background: rgba(0,0,0,.06);
     padding: 12px 12px 12px 46px;
-    height: clamp(180px, 28vh, 320px);
+    height: clamp(260px, 44vh, 520px);
+    box-shadow: 0 10px 22px rgba(0,0,0,.10);
 }
 
-    /* verticale “rail” */
     .route-window::before {
         content: "";
         position: absolute;
@@ -242,7 +255,7 @@ main {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 12px;
+    padding: 12px 12px;
     margin: 8px 0;
     border-radius: 14px;
     background: rgba(255,255,255,.26);
@@ -251,9 +264,8 @@ main {
     text-transform: uppercase;
     letter-spacing: .02em;
     color: var(--zwart);
-    /* genoeg ruimte voor 2 regels */
     line-height: 1.05;
-    min-height: 54px;
+    min-height: 58px;
 }
 
     .route-item::before {
@@ -275,12 +287,12 @@ main {
         overflow-wrap: anywhere;
         word-break: break-word;
         hyphens: auto;
-        font-size: clamp(1.1rem, 2.2vw, 1.9rem);
+        font-size: clamp(1.2rem, 2.2vw, 2.0rem);
     }
 
-    /* highlight current */
+    /* highlight + next bollekes */
     .route-item.is-current {
-        background: rgba(255,212,0,.38);
+        background: rgba(255,212,0,.40);
         border-color: rgba(212,0,0,.28);
         box-shadow: 0 10px 22px rgba(0,0,0,.12);
     }
@@ -290,7 +302,6 @@ main {
             border-color: rgba(255,255,255,.92);
         }
 
-    /* volgende 2 net iets anders */
     .route-item.is-next::before {
         background: var(--greun);
     }
@@ -299,99 +310,7 @@ main {
         background: rgba(0,153,51,.55);
     }
 
-.route-hint {
-    margin-top: 10px;
-    text-align: center;
-    font-weight: 800;
-    color: rgba(0,0,0,.62);
-    font-size: clamp(.9rem, 1.6vw, 1.1rem);
-    text-transform: uppercase;
-}
-
-/* --- RECHTS: KÓMEND --- */
-.panel-side {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 14px;
-}
-
-.side-title {
-    text-align: center;
-    font-weight: 950;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    font-size: clamp(1.2rem, 2.4vw, 2.0rem);
-    color: var(--greun);
-}
-
-.upcoming {
-    position: relative;
-    border-radius: 20px;
-    background: rgba(255,255,255,.22);
-    border: 2px solid rgba(0,0,0,.06);
-    padding: 16px 14px;
-    box-shadow: 0 10px 22px rgba(0,0,0,.10);
-}
-
-.rail {
-    position: absolute;
-    left: 22px;
-    top: 18px;
-    bottom: 18px;
-    width: 6px;
-    border-radius: 999px;
-    background: linear-gradient(180deg, var(--greun), var(--geel), var(--rood));
-    opacity: .85;
-}
-
-.up-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 12px 14px 52px;
-    border-radius: 18px;
-    background: rgba(0,0,0,.06);
-    margin: 10px 0;
-    border: 2px solid rgba(0,0,0,.06);
-}
-
-.up-rank {
-    position: absolute;
-    transform: translateX(-34px);
-    width: 34px;
-    height: 34px;
-    border-radius: 999px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 950;
-    color: var(--wit);
-    background: var(--rood);
-    box-shadow: 0 8px 18px rgba(0,0,0,.14);
-}
-
-.up-name {
-    font-weight: 950;
-    text-transform: uppercase;
-    line-height: 1.06;
-    letter-spacing: .02em;
-    font-size: clamp(1.4rem, 3.2vw, 2.8rem);
-    overflow-wrap: anywhere;
-    word-break: break-word;
-    hyphens: auto;
-}
-
-.side-note {
-    text-align: center;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    color: rgba(0,0,0,.72);
-    font-size: clamp(.95rem, 1.8vw, 1.2rem);
-}
-
-/* --- FOOTER --- */
+/* FOOTER */
 footer {
     height: 9vh;
     min-height: 54px;
@@ -405,11 +324,11 @@ footer {
     letter-spacing: .04em;
     font-size: clamp(.95rem, 2.1vw, 1.7rem);
     color: var(--wit);
-    background: repeating-linear-gradient( 45deg, var(--greun) 0 28px, rgba(255,212,0,1) 28px 56px );
+    background: repeating-linear-gradient(45deg, var(--greun) 0 28px, rgba(255,212,0,1) 28px 56px);
     box-shadow: 0 -6px 18px rgba(0,0,0,.25);
 }
 
-/* --- BIER OVERLAY --- */
+/* BIER OVERLAY */
 #bier-overlay {
     display: none;
     position: fixed;
@@ -418,7 +337,7 @@ footer {
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: repeating-linear-gradient( 135deg, var(--rood) 0 44px, var(--geel) 44px 88px );
+    background: repeating-linear-gradient(135deg, var(--rood) 0 44px, var(--geel) 44px 88px);
     animation: strobe 0.85s linear infinite;
 }
 
@@ -494,24 +413,17 @@ footer {
     hyphens: auto;
 }
 
-/* --- RESPONSIVE --- */
+/* Responsive */
 @media (max-width: 900px) {
     .board-grid {
         grid-template-columns: 1fr;
     }
 
-    .panel-side {
-        order: 2;
-    }
-}
-
-@media (max-height: 420px) {
     .route-window {
-        height: 160px;
+        height: clamp(220px, 34vh, 420px);
     }
 }
 
-/* Respecteer reduce motion */
 @media (prefers-reduced-motion: reduce) {
     #bier-overlay, #bier-tekst-groot, #huidige-halte.pop {
         animation: none !important;
