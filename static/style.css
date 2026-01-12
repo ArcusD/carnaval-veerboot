@@ -384,9 +384,9 @@ footer {
     bottom: 50%;
     transform: translateY(50%);
     /* 🔧 HIER kun je 'm tunen */
-    height: clamp(42px, 12vh, 180px);
+    height: clamp(42px, 15vh, 360px);
     width: auto !important;
-    max-height: clamp(42px, 12vh, 180px);
+    max-height: clamp(42px, 15vh, 360px);
     max-width: 220px;
     display: block;
     object-fit: contain;
