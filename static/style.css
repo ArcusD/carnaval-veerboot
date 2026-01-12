@@ -118,7 +118,6 @@ main {
     padding: min(2.8vh, 24px) min(2.4vw, 22px);
 }
 
-/* Label groen/geel */
 .label {
     display: inline-flex;
     align-items: center;
@@ -129,8 +128,12 @@ main {
     letter-spacing: .04em;
     font-size: clamp(1.0rem, 2.2vw, 2.0rem);
     color: var(--wit);
-    background: linear-gradient(90deg, var(--greun), var(--geel));
-    box-shadow: 0 10px 22px rgba(0,0,0,.18);
+    /* iets donkerder zodat wit beter pakt */
+    background: linear-gradient(90deg, #0b7f2d, #e6bf00);
+    /* extra randje + schaduw voor leesbaarheid */
+    box-shadow: 0 10px 22px rgba(0,0,0,.22);
+    text-shadow: 0 3px 10px rgba(0,0,0,.35);
+    -webkit-text-stroke: 1px rgba(0,0,0,.25);
 }
 
 .current-head {
@@ -293,46 +296,48 @@ main {
    - is-next = daarna (geel bol)
    - is-next2 = daarna (neutraal)
 */
-    .route-item.is-prev {
-        opacity: .62;
-    }
+..route-item.is-prev {
+    opacity: .62;
+}
 
-        .route-item.is-prev::before {
-            background: var(--rood);
-            border-color: rgba(255,255,255,.92);
-        }
+.route-item.is-prev::before {
+    background: var(--rood);
+    border-color: rgba(255,255,255,.92);
+}
 
-    .route-item.is-current {
-        background: rgba(255,212,0,.40);
-        border-color: rgba(0,153,51,.28);
-        box-shadow: 0 10px 22px rgba(0,0,0,.12);
-    }
+.route-item.is-current {
+    background: rgba(255,212,0,.46); /* geel vak */
+    border-color: rgba(212,0,0,.20);
+    box-shadow: 0 10px 22px rgba(0,0,0,.12);
+}
 
-        .route-item.is-current::before {
-            background: var(--greun);
-            border-color: rgba(255,255,255,.92);
-        }
-
-        .route-item.is-current::after {
-            content: "➜";
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-weight: 1000;
-            font-size: 1.6em;
-            color: var(--greun);
-            text-shadow: 0 6px 14px rgba(0,0,0,.16);
-        }
-
-    .route-item.is-next::before {
-        background: var(--geel);
+    .route-item.is-current::before {
+        background: var(--geel); /* geel bolletje */
         border-color: rgba(255,255,255,.92);
     }
 
-    .route-item.is-next2::before {
-        background: rgba(0,0,0,.18);
+    .route-item.is-current::after {
+        content: "➜";
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-weight: 1000;
+        font-size: 1.6em;
+        color: var(--geel);
+        text-shadow: 0 6px 14px rgba(0,0,0,.22);
     }
+
+/* volgende = groen bolletje */
+.route-item.is-next::before {
+    background: var(--greun);
+    border-color: rgba(255,255,255,.92);
+}
+
+/* daarna neutraal */
+.route-item.is-next2::before {
+    background: rgba(0,0,0,.18);
+}
 
 footer {
     position: relative;
@@ -343,7 +348,6 @@ footer {
     justify-content: center;
     padding: 0 max(12px, 2vw);
     padding-right: clamp(70px, 10vw, 140px); /* ruimte voor logo rechts */
-
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: .04em;
@@ -379,14 +383,14 @@ footer {
     right: max(10px, 1.2vw);
     bottom: 50%;
     transform: translateY(50%);
-    /* ✅ klein houden */
-    height: clamp(18px, 3.8vh, 48px);
+    /* 🔧 HIER kun je 'm tunen */
+    height: clamp(42px, 7.5vh, 90px);
     width: auto !important;
-    max-height: clamp(18px, 3.8vh, 48px);
-    max-width: clamp(18px, 3.8vh, 48px);
+    max-height: clamp(42px, 7.5vh, 90px);
+    max-width: 220px;
     display: block;
     object-fit: contain;
-    filter: drop-shadow(0 8px 18px rgba(0,0,0,.45));
+    filter: drop-shadow(0 10px 22px rgba(0,0,0,.45));
 }
 
 
