@@ -6,6 +6,8 @@ import socket
 
 app = Flask(__name__)
 DATA_FILE = 'haltes.json'
+CONFIG_FILE = 'config.json'
+DEFAULT_CONFIG = {"rotate_ms": 5500}
 
 # --- NIEUW: STATUS VOOR HET BIER ALARM ---
 # We bewaren dit gewoon in het geheugen. Bij een reboot is het alarm uit.
@@ -13,6 +15,26 @@ systeem_status = {
     "bier_modus": False,
     "bier_haalder": ""
 }
+
+def load_config():
+    if os.path.exists(CONFIG_FILE):
+        try:
+            with open(CONFIG_FILE, 'r') as f:
+                cfg = json.load(f)
+        except Exception:
+            cfg = {}
+    else:
+        cfg = {}
+
+    # defaults aanvulle
+    for k, v in DEFAULT_CONFIG.items():
+        cfg.setdefault(k, v)
+    return cfg
+
+def save_config(cfg):
+    with open(CONFIG_FILE, 'w') as f:
+        json.dump(cfg, f, indent=2, ensure_ascii=False)
+
 
 # --- BESTAANDE CODE (Haltes laden/opslaan) ---
 def load_haltes():
@@ -42,6 +64,25 @@ def api_haltes():
         save_haltes(haltes)
         return jsonify({"status": "success"})
     return jsonify(load_haltes())
+
+@app.route('/api/config', methods=['GET', 'POST'])
+def api_config():
+    cfg = load_config()
+
+    if request.method == 'POST':
+        data = request.json or {}
+        if 'rotate_ms' in data:
+            try:
+                ms = int(data['rotate_ms'])
+                # veilige grenzen: 1s t/m 60s
+                if 1000 <= ms <= 60000:
+                    cfg['rotate_ms'] = ms
+                    save_config(cfg)
+            except Exception:
+                pass
+
+    return jsonify(cfg)
+
 
 # --- NIEUW: BIER ROUTES ---
 

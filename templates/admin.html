@@ -116,6 +116,16 @@
         <ul id="lijst"></ul>
     </div>
 
+    <div class="vak">
+        <h2>⏱️ Doorsjtoer-sjnelheid</h2>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <input type="number" id="rotateSeconds" min="1" max="60" step="1" style="width: 45%;" placeholder="sekonde">
+            <button class="btn-groen" onclick="opslaonSjnelheid()">Opslaon</button>
+        </div>
+        <p id="sjnelheid-status" style="text-align:center; font-style:italic; font-size:.95em;"></p>
+    </div>
+
+
     <div class="vak" style="background: #e9ecef;">
         <h2>🛠️ Systeem</h2>
         <button class="btn-oranje" onclick="doeUpdate()" style="width:100%">🔄 Code opfrisse</button>
@@ -165,6 +175,36 @@
             await fetch('/api/haltes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(haltes) });
             tekenLijst();
         }
+        async function laadConfig() {
+          try{
+            const r = await fetch('/api/config');
+            const cfg = await r.json();
+            const sec = Math.round((cfg.rotate_ms || 5500) / 1000);
+            document.getElementById('rotateSeconds').value = sec;
+          }catch(e){}
+        }
+
+        async function opslaonSjnelheid() {
+          const el = document.getElementById('rotateSeconds');
+          const status = document.getElementById('sjnelheid-status');
+          const sec = Number(el.value);
+
+          if (!Number.isFinite(sec) || sec < 1 || sec > 60) {
+            alert("Zèt 't tusse 1 en 60 sekonde.");
+            return;
+          }
+
+          status.innerText = "Bezig mit opslaon...";
+          await fetch('/api/config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rotate_ms: Math.round(sec * 1000) })
+          });
+          status.innerText = "Klaor. 't sjirm pakt 't binne enkele sekonde op.";
+        }
+
+        laadConfig();
+
 
         function voegToe() {
             const v = document.getElementById('nieuweHalte');

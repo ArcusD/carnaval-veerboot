@@ -20,7 +20,7 @@ body {
     flex-direction: column;
     font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
     color: var(--zwart);
-    /* confetti ALTIJD in background */
+    /* confetti altijd */
     background: radial-gradient(circle, rgba(212,0,0,.95) 0 5px, transparent 6px) 0 0/70px 70px, radial-gradient(circle, rgba(0,153,51,.95) 0 5px, transparent 6px) 22px 34px/86px 86px, radial-gradient(circle, rgba(255,212,0,.95) 0 5px, transparent 6px) 44px 10px/78px 78px, radial-gradient(circle, rgba(16,16,21,.35) 0 4px, transparent 5px) 12px 58px/110px 110px, radial-gradient(circle at 20% 12%, rgba(255,255,255,.55), transparent 55%), radial-gradient(circle at 85% 25%, rgba(255,255,255,.35), transparent 60%), linear-gradient(180deg, var(--geel) 0%, rgba(255,239,133,1) 45%, var(--geel) 100%);
     background-attachment: fixed;
 }
@@ -47,12 +47,9 @@ body {
         pointer-events: none;
     }
 
-.topbar-left {
-    position: relative;
-    z-index: 1;
+.topbar-spacer {
     width: 4.2em;
     min-width: 4.2em;
-    font-size: clamp(1.4rem, 3vw, 2.2rem);
 }
 
 #titel {
@@ -106,7 +103,7 @@ main {
 
 .board-grid {
     display: grid;
-    grid-template-columns: 1.35fr 1fr; /* current groter */
+    grid-template-columns: 1.35fr 1fr;
     gap: min(2.6vw, 22px);
     align-items: stretch;
 }
@@ -140,7 +137,7 @@ main {
     margin-bottom: min(1.8vh, 12px);
 }
 
-/* CURRENT: extra prominent */
+/* VÖLGEND groot */
 .panel-current {
     position: relative;
     overflow: hidden;
@@ -160,7 +157,6 @@ main {
     z-index: 1;
     padding: min(2.2vh, 18px) min(2.2vw, 18px);
     border-radius: 22px;
-    /* carnaval rand */
     background: linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,.18)) padding-box, linear-gradient(90deg, var(--rood), var(--geel), var(--greun), var(--rood)) border-box;
     border: 5px solid transparent;
     box-shadow: 0 18px 44px rgba(0,0,0,.16);
@@ -174,7 +170,6 @@ main {
     font-weight: 1000;
     text-transform: uppercase;
     line-height: 1.02;
-    /* GROTER */
     font-size: clamp(3.2rem, 8.8vw, 7.6rem);
     color: var(--zwart);
     text-shadow: 0.08em 0.08em 0 rgba(255,255,255,.92), 0 0 26px rgba(0,0,0,.18);
@@ -255,7 +250,7 @@ main {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 12px;
+    padding: 12px 52px 12px 12px; /* ruimte rechts voor pijl */
     margin: 8px 0;
     border-radius: 14px;
     background: rgba(255,255,255,.26);
@@ -290,24 +285,51 @@ main {
         font-size: clamp(1.2rem, 2.2vw, 2.0rem);
     }
 
-    /* highlight + next bollekes */
-    .route-item.is-current {
-        background: rgba(255,212,0,.40);
-        border-color: rgba(212,0,0,.28);
-        box-shadow: 0 10px 22px rgba(0,0,0,.12);
+    /* ✅ OV-logica:
+   - is-prev = net gepasseerd (rood, dof)
+   - is-current = VÖLGEND (groen bol + pijl)
+   - is-next = daarna (geel bol)
+   - is-next2 = daarna (neutraal)
+*/
+    .route-item.is-prev {
+        opacity: .62;
     }
 
-        .route-item.is-current::before {
+        .route-item.is-prev::before {
             background: var(--rood);
             border-color: rgba(255,255,255,.92);
         }
 
+    .route-item.is-current {
+        background: rgba(255,212,0,.40);
+        border-color: rgba(0,153,51,.28);
+        box-shadow: 0 10px 22px rgba(0,0,0,.12);
+    }
+
+        .route-item.is-current::before {
+            background: var(--greun);
+            border-color: rgba(255,255,255,.92);
+        }
+
+        .route-item.is-current::after {
+            content: "➜";
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 1000;
+            font-size: 1.6em;
+            color: var(--greun);
+            text-shadow: 0 6px 14px rgba(0,0,0,.16);
+        }
+
     .route-item.is-next::before {
-        background: var(--greun);
+        background: var(--geel);
+        border-color: rgba(255,255,255,.92);
     }
 
     .route-item.is-next2::before {
-        background: rgba(0,153,51,.55);
+        background: rgba(0,0,0,.18);
     }
 
 /* FOOTER */

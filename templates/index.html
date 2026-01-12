@@ -9,7 +9,8 @@
 
 <body class="carnaval">
     <header class="topbar">
-        <div class="topbar-left" aria-hidden="true">🎭</div>
+        <!-- masker weg, maar spacer houdt titel mooi in 't midden -->
+        <div class="topbar-spacer" aria-hidden="true"></div>
         <div id="titel">Eesjte Zittesje Vaerdeins</div>
         <div id="klok" aria-label="Kloek">--:--</div>
     </header>
@@ -18,18 +19,18 @@
         <section class="board" role="region" aria-label="Veerdèins-infoo">
             <div class="board-grid">
 
-                <!-- LINKS: HUIDIGE HALTE (PROMINENT) -->
+                <!-- LINKS: VÖLGEND -->
                 <div class="panel panel-current">
                     <div class="current-head">
                         <div class="label" id="volgende-tekst">Völgende sjtop</div>
                     </div>
 
-                    <div class="current-name-wrap" id="halte-wrap" aria-label="Huidige sjtop">
+                    <div class="current-name-wrap" id="halte-wrap" aria-label="Völgende sjtop">
                         <div id="huidige-halte">Laje...</div>
                     </div>
                 </div>
 
-                <!-- RECHTS: SJTOPPE-LIJST -->
+                <!-- RECHTS: SJTOPPE -->
                 <aside class="panel panel-route" aria-label="Sjtoppe">
                     <div class="route-title">Sjtoppe</div>
                     <div class="route-window" id="route-window">

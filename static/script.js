@@ -1,7 +1,7 @@
 (() => {
-  const ROTATE_MS = 5500;
   const FETCH_MS  = 20000;
   const BIER_MS   = 1500;
+  const CONFIG_MS = 15000;
 
   const elKlok   = document.getElementById('klok');
   const elLabel  = document.getElementById('volgende-tekst');
@@ -22,6 +22,9 @@
   let lastJson = "";
   let builtFor = "";
 
+  let rotateMs = 5500;
+  let rotateTimer = null;
+
   const clean = (v) => (v ?? "").toString().trim();
 
   function updateKlok() {
@@ -31,7 +34,7 @@
 
   function fitToBox(elText, elBox, minPx = 18) {
     if (!elText || !elBox) return;
-    elText.style.fontSize = ""; // reset naar CSS clamp
+    elText.style.fontSize = "";
     let safety = 36;
 
     while (safety-- > 0) {
@@ -49,6 +52,26 @@
     el.classList.remove('pop');
     void el.offsetWidth;
     el.classList.add('pop');
+  }
+
+  function startRotateTimer() {
+    if (rotateTimer) clearInterval(rotateTimer);
+    rotateTimer = setInterval(rotate, rotateMs);
+  }
+
+  async function fetchConfig() {
+    try {
+      const r = await fetch('/api/config', { cache: 'no-store' });
+      const cfg = await r.json();
+
+      const newMs = Number(cfg?.rotate_ms);
+      if (Number.isFinite(newMs) && newMs >= 1000 && newMs <= 60000 && newMs !== rotateMs) {
+        rotateMs = newMs;
+        startRotateTimer();
+      }
+    } catch (e) {
+      // stil falen
+    }
   }
 
   function buildRouteListIfNeeded() {
@@ -89,13 +112,20 @@
   }
 
   function markRoute() {
+    const n = haltes.length || 0;
+    const prev = n ? (idx - 1 + n) % n : -1;
+    const next1 = n ? (idx + 1) % n : -1;
+    const next2 = n ? (idx + 2) % n : -1;
+
     const items = elRouteLst.querySelectorAll('.route-item');
     items.forEach((li) => {
-      li.classList.remove('is-current','is-next','is-next2');
+      li.classList.remove('is-prev','is-current','is-next','is-next2');
       const i = Number(li.dataset.idx);
-      if (i === idx) li.classList.add('is-current');
-      if (haltes.length && i === ((idx + 1) % haltes.length)) li.classList.add('is-next');
-      if (haltes.length && i === ((idx + 2) % haltes.length)) li.classList.add('is-next2');
+
+      if (i === prev)  li.classList.add('is-prev');
+      if (i === idx)   li.classList.add('is-current'); // dit is "völgende"
+      if (i === next1) li.classList.add('is-next');
+      if (i === next2) li.classList.add('is-next2');
     });
   }
 
@@ -164,14 +194,18 @@
     }
   }
 
+  // start
   updateKlok();
   setInterval(updateKlok, 1000);
+
+  fetchConfig();
+  setInterval(fetchConfig, CONFIG_MS);
 
   fetchHaltes();
   setInterval(fetchHaltes, FETCH_MS);
 
   render();
-  setInterval(rotate, ROTATE_MS);
+  startRotateTimer();
 
   checkBierStatus();
   setInterval(checkBierStatus, BIER_MS);
@@ -184,6 +218,7 @@
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) {
       updateKlok();
+      fetchConfig();
       fetchHaltes();
       checkBierStatus();
       requestAnimationFrame(() => {
