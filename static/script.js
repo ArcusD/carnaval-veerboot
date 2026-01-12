@@ -1,49 +1,169 @@
-let haltes = [];
-let index = 0;
+(() => {
+  // === Instellingen ===
+  const ROTATE_MS = 5500;   // hoe vaak sjtop wisselt
+  const FETCH_MS  = 20000;  // hoe vaak lijst opnieuw van backend
+  const BIER_MS   = 1500;   // bier-status check
 
-// 1. Haal de data op uit jouw Python backend
-async function updateData() {
-    try {
-        const response = await fetch('/api/haltes');
-        const nieuweHaltes = await response.json();
-        
-        // Alleen updaten als er data is
-        if (nieuweHaltes.length > 0) {
-            haltes = nieuweHaltes;
-        }
-    } catch (error) {
-        console.error("Kon haltes niet laden:", error);
-    }
-}
+  // === Elementen ===
+  const elKlok   = document.getElementById('klok');
+  const elLabel  = document.getElementById('volgende-tekst');
+  const elHalte  = document.getElementById('huidige-halte');
+  const elWrap   = document.getElementById('halte-wrap');
+  const elKomLbl = document.getElementById('komend-label');
+  const elKomLst = document.getElementById('komende-lijst');
 
-// 2. Wissel van halte op het scherm
-function roteerScherm() {
-    // Als de lijst leeg is (geen haltes ingevoerd in admin)
-    if (haltes.length === 0) {
-        document.getElementById('huidige-halte').innerText = "Geine deens"; // Zittesj
-        return;
-    }
+  const elBierOverlay = document.getElementById('bier-overlay');
+  const elBierNaam    = document.getElementById('bier-naam-tekst');
 
-    // Zorg dat we niet crashen als de index te hoog is
-    if (index >= haltes.length) index = 0;
+  if (!elHalte || !elKlok) return; // safety
 
-    // Toon de tekst
-    document.getElementById('huidige-halte').innerText = haltes[index];
+  let haltes = [];
+  let idx = 0;
+  let lastJson = "";
 
-    // Tel eentje op voor de volgende keer
-    index++;
-}
+  // === Helpers ===
+  const clean = (v) => (v ?? "").toString().trim();
 
-// 3. Een klokje
-function updateKlok() {
+  function updateKlok() {
     const nu = new Date();
-    const tijd = nu.toLocaleTimeString('nl-NL', {hour: '2-digit', minute:'2-digit'}); 
-    document.getElementById('klok').innerText = tijd;
-}
+    elKlok.textContent = nu.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+  }
 
-// --- DE START ---
+  function popHalte() {
+    elHalte.classList.remove('pop');
+    // force reflow om animatie opnieuw te triggeren
+    void elHalte.offsetWidth;
+    elHalte.classList.add('pop');
+  }
 
-updateData();
-setInterval(updateKlok, 1000);
-setInterval(roteerScherm, 5000);
-setInterval(updateData, 30000);
+  function setUpcoming(items) {
+    if (!elKomLst) return;
+    elKomLst.innerHTML = "";
+
+    const filled = items.filter(Boolean);
+    const show = filled.length ? filled : ["—", "—", "—"];
+
+    show.slice(0, 3).forEach((t) => {
+      const li = document.createElement('li');
+      li.textContent = t;
+      elKomLst.appendChild(li);
+    });
+  }
+
+  // Text-fit: als 't te lang is, verklein automatisch tot 't past
+  function fitText() {
+    if (!elWrap) return;
+
+    elHalte.style.fontSize = ""; // reset (laat CSS clamp starten)
+    let safety = 26;
+
+    while (safety-- > 0) {
+      const tooWide  = elHalte.scrollWidth  > elWrap.clientWidth;
+      const tooHigh  = elHalte.scrollHeight > elWrap.clientHeight;
+
+      if (!tooWide && !tooHigh) break;
+
+      const cur = parseFloat(getComputedStyle(elHalte).fontSize);
+      if (!Number.isFinite(cur) || cur < 18) break;
+      elHalte.style.fontSize = (cur * 0.92) + "px";
+    }
+  }
+
+  function render() {
+    if (!Array.isArray(haltes) || haltes.length === 0) {
+      elLabel.textContent = "Völgende sjtop";
+      elHalte.textContent = "Gein sjtoppe";
+      if (elKomLbl) elKomLbl.textContent = "Dao nao:";
+      setUpcoming([]);
+      fitText();
+      return;
+    }
+
+    if (idx >= haltes.length) idx = 0;
+
+    const current = clean(haltes[idx]) || "—";
+    elLabel.textContent = "Völgende sjtop";
+    elHalte.textContent = current;
+
+    // Volgende 3 sjtoppe
+    const next = [];
+    for (let i = 1; i <= 3; i++) {
+      next.push(clean(haltes[(idx + i) % haltes.length]));
+    }
+    if (elKomLbl) elKomLbl.textContent = "Dao nao:";
+    setUpcoming(next);
+
+    fitText();
+  }
+
+  function rotate() {
+    if (!Array.isArray(haltes) || haltes.length === 0) {
+      render();
+      return;
+    }
+    idx = (idx + 1) % haltes.length;
+    popHalte();
+    render();
+  }
+
+  async function fetchHaltes() {
+    try {
+      const r = await fetch('/api/haltes', { cache: 'no-store' });
+      const data = await r.json();
+      if (!Array.isArray(data)) return;
+
+      const json = JSON.stringify(data);
+      if (json !== lastJson) {
+        lastJson = json;
+        haltes = data;
+        idx = (haltes.length ? (idx % haltes.length) : 0);
+        popHalte();
+        render();
+      }
+    } catch (e) {
+      // stil falen: scherm mot doorblieve loepe
+      console.log("Kon sjtoppe neet laje:", e);
+    }
+  }
+
+  async function checkBierStatus() {
+    if (!elBierOverlay || !elBierNaam) return;
+
+    try {
+      const r = await fetch('/api/bier_status', { cache: 'no-store' });
+      const data = await r.json();
+
+      if (data && data.bier_modus === true) {
+        elBierOverlay.style.display = 'flex';
+        elBierNaam.textContent = clean(data.bier_haalder) || "IEMAND";
+      } else {
+        elBierOverlay.style.display = 'none';
+      }
+    } catch (e) {
+      console.log("Kon bier-status neet checke:", e);
+    }
+  }
+
+  // === Start ===
+  updateKlok();
+  setInterval(updateKlok, 1000);
+
+  fetchHaltes();
+  setInterval(fetchHaltes, FETCH_MS);
+
+  render();
+  setInterval(rotate, ROTATE_MS);
+
+  checkBierStatus();
+  setInterval(checkBierStatus, BIER_MS);
+
+  window.addEventListener('resize', fitText);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      updateKlok();
+      fetchHaltes();
+      checkBierStatus();
+      setTimeout(fitText, 50);
+    }
+  });
+})();

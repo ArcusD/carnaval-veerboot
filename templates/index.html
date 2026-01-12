@@ -1,90 +1,50 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <title>Carnavalswagen Display</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Eesjte Zittesje Vaerdeins</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="carnaval">
 
-    <header>
-        <div class="spacer"></div>
+    <header class="topbar">
+        <div class="spacer" aria-hidden="true">🎭</div>
         <div id="titel">Eesjte Zittesje Vaerdeins</div>
-        <div id="klok">--:--</div>
+        <div id="klok" aria-label="Kloek">--:--</div>
     </header>
 
     <main>
-        <div id="volgende-tekst">Volgende sjtop:</div>
-        <div id="huidige-halte">Laje...</div>
+        <section class="board" role="region" aria-label="Veerdèins-infoo">
+            <div class="label" id="volgende-tekst">Völgende sjtop</div>
+
+            <div id="halte-wrap">
+                <div id="huidige-halte">Laje...</div>
+            </div>
+
+            <div id="komend" aria-label="Kómende sjtoppe">
+                <span id="komend-label">Dao nao:</span>
+                <ul id="komende-lijst" aria-label="Lies van kómende sjtoppe">
+                    <li>—</li>
+                    <li>—</li>
+                    <li>—</li>
+                </ul>
+            </div>
+        </section>
     </main>
 
     <footer>
-        Deze vaerdeins wurt aangebaoje door CV Opnuuj Begoosj
+        Dees veerdèins wurt aangebaoje door CV Opnuuj Begoosj
     </footer>
 
-    <div id="bier-overlay">
-        <div id="bier-tekst-groot">HAAL<br>BIER</div>
-        <div id="bier-naam-tekst">NAAM</div>
+    <div id="bier-overlay" aria-hidden="true">
+        <div class="bier-kaart">
+            <div id="bier-tekst-groot">HAOL<br>BIER</div>
+            <div class="bier-sub">Veur:</div>
+            <div id="bier-naam-tekst">—</div>
+        </div>
     </div>
 
-    <script>
-        // 1. KLOK (Elke seconde)
-        function updateKlok() {
-            const nu = new Date();
-            document.getElementById('klok').innerText = nu.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-        }
-        setInterval(updateKlok, 1000);
-        updateKlok();
-
-        // 2. HALTE LADEN (Elke 3 seconden)
-        async function updateDisplay() {
-            try {
-                // Haal de lijst op uit de Python backend
-                const response = await fetch('/api/haltes');
-                const haltes = await response.json();
-
-                const halteVeld = document.getElementById('huidige-halte');
-                const labelVeld = document.getElementById('volgende-tekst');
-
-                // Pak de EERSTE uit de lijst (index 0)
-                if (haltes.length > 0) {
-                    halteVeld.innerText = haltes[0];
-                    labelVeld.innerText = "Volgende sjtop:";
-                } else {
-                    // Lijst is leeg?
-                    halteVeld.innerText = "EINDE";
-                    labelVeld.innerText = "Tot volgend jaor!";
-                }
-
-            } catch (e) {
-                console.error("Kon halte niet laden:", e);
-            }
-        }
-        // Start direct en herhaal
-        updateDisplay();
-        setInterval(updateDisplay, 3000);
-
-        // 3. BIER ALARM (Elke 2 seconden)
-        async function checkBierStatus() {
-            try {
-                const response = await fetch('/api/bier_status');
-                const data = await response.json();
-
-                const overlay = document.getElementById('bier-overlay');
-                const naamVeld = document.getElementById('bier-naam-tekst');
-
-                if (data.bier_modus === true) {
-                    overlay.style.display = 'flex';
-                    naamVeld.innerText = data.bier_haalder;
-                } else {
-                    overlay.style.display = 'none';
-                }
-            } catch (e) {
-                console.log("Kon bier status niet checken", e);
-            }
-        }
-        setInterval(checkBierStatus, 2000);
-    </script>
-
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

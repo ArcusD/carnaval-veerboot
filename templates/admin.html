@@ -70,7 +70,6 @@
             width: 100%;
         }
 
-        /* Grote alarm knop */
         .btn-alarm {
             width: 100%;
             font-size: 1.2em;
@@ -97,21 +96,21 @@
 </head>
 <body>
 
-    <h1>🎭 Beheer Wagen</h1>
+    <h1>🎭 Beheer vaan de Waeg</h1>
 
     <div class="vak alarm-vak">
-        <h2 style="color: red; margin-top: 0;">🍺 Dorst Alarm</h2>
+        <h2 style="color: red; margin-top: 0;">🍺 Dorsj Alarm</h2>
         <div style="display: flex; gap: 10px;">
-            <input type="text" id="bierNaam" placeholder="Wie moet bier halen?">
+            <input type="text" id="bierNaam" placeholder="Wiej mot bier haole?">
         </div>
-        <button class="btn-alarm" onclick="zetBierAan()">🚨 HAAL BIER!</button>
-        <button class="btn-groen" onclick="zetBierUit()" style="width: 100%; margin-top: 10px;">✅ Terug naar Normaal</button>
+        <button class="btn-alarm" onclick="zetBierAan()">🚨 HAOL BIER!</button>
+        <button class="btn-groen" onclick="zetBierUit()" style="width: 100%; margin-top: 10px;">✅ Trök nao normaal</button>
     </div>
 
     <div class="vak">
-        <h2>📍 Route & Haltes</h2>
+        <h2>📍 Roet & Sjtoppe</h2>
         <div style="display: flex;">
-            <input type="text" id="nieuweHalte" placeholder="Nieuwe halte...">
+            <input type="text" id="nieuweHalte" placeholder="Nuije sjtop...">
             <button class="btn-groen" onclick="voegToe()">+</button>
         </div>
         <ul id="lijst"></ul>
@@ -119,10 +118,10 @@
 
     <div class="vak" style="background: #e9ecef;">
         <h2>🛠️ Systeem</h2>
-        <button class="btn-oranje" onclick="doeUpdate()" style="width:100%">🔄 Update Code</button>
+        <button class="btn-oranje" onclick="doeUpdate()" style="width:100%">🔄 Code opfrisse</button>
         <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button class="btn-rood" onclick="doeReboot()" style="flex: 1;">🔌 Herstarten</button>
-            <button class="btn-zwart" onclick="doeShutdown()" style="flex: 1;">⚫ Uitschakelen</button>
+            <button class="btn-rood" onclick="doeReboot()" style="flex: 1;">🔌 Opnuuj starte</button>
+            <button class="btn-zwart" onclick="doeShutdown()" style="flex: 1;">⚫ Oetsjakele</button>
         </div>
         <p id="status-tekst" style="text-align: center; font-style: italic; font-size: 0.9em;"></p>
     </div>
@@ -130,17 +129,16 @@
     <script>
         let haltes = [];
 
-        // --- BIER FUNCTIES ---
         async function zetBierAan() {
             const naam = document.getElementById('bierNaam').value;
-            if (!naam) { alert("Vul eerst een naam in!"); return; }
+            if (!naam) { alert("Vul eers eine naam in!"); return; }
 
             await fetch('/api/set_bier', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ actief: true, naam: naam })
             });
-            alert("🚨 ALARM GEACTIVEERD! Het scherm knippert nu.");
+            alert("🚨 Alarm steit aon! 't sjirm knippert noe.");
         }
 
         async function zetBierUit() {
@@ -149,10 +147,9 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ actief: false })
             });
-            alert("✅ Scherm is weer normaal.");
+            alert("✅ Alles weer normaal.");
         }
 
-        // --- HALTE FUNCTIES ---
         async function laadHaltes() {
             const r = await fetch('/api/haltes'); haltes = await r.json(); tekenLijst();
         }
@@ -174,17 +171,17 @@
             if (v.value) { haltes.push(v.value); v.value = ''; opslaan(); }
         }
 
-        function verwijder(i) { if (confirm("Verwijderen?")) { haltes.splice(i, 1); opslaan(); } }
-        function bewerk(i) { const n = prompt("Nieuwe naam:", haltes[i]); if (n) { haltes[i] = n; opslaan(); } }
+        function verwijder(i) { if (confirm("Wegsmeite?")) { haltes.splice(i, 1); opslaan(); } }
+        function bewerk(i) { const n = prompt("Nuije naam:", haltes[i]); if (n) { haltes[i] = n; opslaan(); } }
 
-        // --- SYSTEEM FUNCTIES ---
         async function doeUpdate() {
             document.getElementById('status-tekst').innerText = "Bezig...";
             await fetch('/api/update', { method: 'POST' });
-            alert("Update klaar!");
+            alert("Klaor!");
+            document.getElementById('status-tekst').innerText = "";
         }
-        function doeReboot() { if (confirm("Herstarten?")) fetch('/api/reboot', { method: 'POST' }); }
-        function doeShutdown() { if (confirm("Uitschakelen?")) fetch('/api/shutdown', { method: 'POST' }); }
+        function doeReboot() { if (confirm("Opnuuj starte?")) fetch('/api/reboot', { method: 'POST' }); }
+        function doeShutdown() { if (confirm("Ech oetsjakele?")) fetch('/api/shutdown', { method: 'POST' }); }
 
         laadHaltes();
     </script>
