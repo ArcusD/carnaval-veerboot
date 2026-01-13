@@ -20,7 +20,6 @@ body {
     flex-direction: column;
     font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
     color: var(--zwart);
-    /* confetti altijd */
     background: radial-gradient(circle, rgba(212,0,0,.95) 0 5px, transparent 6px) 0 0/70px 70px, radial-gradient(circle, rgba(0,153,51,.95) 0 5px, transparent 6px) 22px 34px/86px 86px, radial-gradient(circle, rgba(255,212,0,.95) 0 5px, transparent 6px) 44px 10px/78px 78px, radial-gradient(circle, rgba(16,16,21,.35) 0 4px, transparent 5px) 12px 58px/110px 110px, radial-gradient(circle at 20% 12%, rgba(255,255,255,.55), transparent 55%), radial-gradient(circle at 85% 25%, rgba(255,255,255,.35), transparent 60%), linear-gradient(180deg, var(--geel) 0%, rgba(255,239,133,1) 45%, var(--geel) 100%);
     background-attachment: fixed;
 }
@@ -28,15 +27,16 @@ body {
 /* HEADER */
 .topbar {
     position: relative;
-    height: 16vh;
-    min-height: 88px;
-    padding: max(10px, 1.2vh) max(14px, 2.2vw);
+    height: 14vh; /* Iets kleiner om meer ruimte voor bord te maken */
+    min-height: 80px;
+    padding: 10px 2vw;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
     background: repeating-linear-gradient( 45deg, var(--rood) 0 28px, rgba(255,212,0,1) 28px 56px );
     box-shadow: 0 6px 18px rgba(0,0,0,.30);
+    z-index: 10;
 }
 
     .topbar::after {
@@ -60,11 +60,10 @@ body {
     font-weight: 950;
     text-transform: uppercase;
     letter-spacing: .06em;
-    font-size: clamp(1.5rem, 4.2vw, 3.5rem);
+    font-size: clamp(1.5rem, 3.5vw, 3.0rem);
     color: var(--wit);
     text-shadow: 0 4px 0 rgba(0,0,0,.28), 0 10px 20px rgba(0,0,0,.20);
     -webkit-text-stroke: 2px rgba(0,0,0,.35);
-    text-shadow: 0 4px 0 rgba(0,0,0,.45), 0 10px 22px rgba(0,0,0,.45);
 }
 
 #klok {
@@ -72,9 +71,9 @@ body {
     z-index: 1;
     font-weight: 950;
     font-variant-numeric: tabular-nums;
-    font-size: clamp(2.0rem, 5.2vw, 4.2rem);
+    font-size: clamp(2.0rem, 4.0vw, 3.5rem);
     color: var(--wit);
-    padding: .18em .42em;
+    padding: .15em .42em;
     border-radius: .70em;
     background: rgba(0,0,0,.18);
     box-shadow: var(--soft);
@@ -89,100 +88,79 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: min(3vh, 24px) min(3vw, 28px);
+    padding: min(2vh, 20px) min(2vw, 20px);
 }
 
 .board {
     width: 100%;
-    max-width: 1700px;
-    padding: min(2.6vh, 26px) min(2.6vw, 28px);
+    max-width: 1600px;
+    height: 100%;
+    max-height: 85vh;
+    padding: min(2vh, 20px);
     border-radius: 28px;
     background: rgba(255,255,255,.30);
     border: 4px solid rgba(0,0,0,.08);
     box-shadow: var(--shadow);
     backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Verdeelt ruimte tussen kop, midden, voet */
+    gap: 2vh;
 }
 
-.board-grid {
-    display: grid;
-    grid-template-columns: 1.35fr 1fr;
-    gap: min(2.6vw, 22px);
-    align-items: stretch;
-}
-
-.panel {
-    border-radius: 24px;
-    background: rgba(255,255,255,.26);
-    border: 3px solid rgba(0,0,0,.08);
-    box-shadow: 0 10px 24px rgba(0,0,0,.12);
-    padding: min(2.8vh, 24px) min(2.4vw, 22px);
+/* LABEL BOVENAAN */
+.top-label-container {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 1vh;
 }
 
 .label {
     display: inline-flex;
     align-items: center;
-    padding: .38em 1.0em;
+    justify-content: center;
+    padding: .4em 1.5em;
     border-radius: 999px;
     font-weight: 950;
     text-transform: uppercase;
     letter-spacing: .04em;
-    font-size: clamp(1.0rem, 2.2vw, 2.0rem);
+    /* FLINK VERGROOT */
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
     color: var(--wit);
-    /* iets donkerder zodat wit beter pakt */
     background: linear-gradient(90deg, #0b7f2d, #e6bf00);
-    /* extra randje + schaduw voor leesbaarheid */
     box-shadow: 0 10px 22px rgba(0,0,0,.22);
     text-shadow: 0 3px 10px rgba(0,0,0,.35);
     -webkit-text-stroke: 1px rgba(0,0,0,.25);
 }
 
-.current-head {
-    display: flex;
-    justify-content: center;
-    margin-bottom: min(1.8vh, 12px);
-}
-
-/* VÖLGEND groot */
-.panel-current {
+/* MIDDEN: GROTE NAAM */
+.main-display {
     position: relative;
-    overflow: hidden;
-}
-
-    .panel-current::before {
-        content: "";
-        position: absolute;
-        inset: -40%;
-        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), transparent 55%), radial-gradient(circle at 70% 40%, rgba(255,255,255,.35), transparent 58%), radial-gradient(circle at 55% 70%, rgba(255,212,0,.32), transparent 60%);
-        transform: rotate(6deg);
-        pointer-events: none;
-    }
-
-.current-name-wrap {
-    position: relative;
-    z-index: 1;
-    padding: min(2.2vh, 18px) min(2.2vw, 18px);
-    border-radius: 22px;
-    background: linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,.18)) padding-box, linear-gradient(90deg, var(--rood), var(--geel), var(--greun), var(--rood)) border-box;
-    border: 5px solid transparent;
-    box-shadow: 0 18px 44px rgba(0,0,0,.16);
-    min-height: clamp(170px, 30vh, 340px);
+    flex: 1; /* Neemt alle beschikbare ruimte in */
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,.18)) padding-box, linear-gradient(90deg, var(--rood), var(--geel), var(--greun), var(--rood)) border-box;
+    border: 6px solid transparent;
+    border-radius: 28px;
+    box-shadow: 0 18px 44px rgba(0,0,0,.16);
+    padding: 0 2vw;
 }
 
 #huidige-halte {
     font-weight: 1000;
     text-transform: uppercase;
-    line-height: 1.02;
-    font-size: clamp(3.2rem, 8.8vw, 7.6rem);
+    line-height: 1.1;
+    /* Basisgrootte, JS past dit aan, maar mag groter starten */
+    font-size: 15rem;
     color: var(--zwart);
     text-shadow: 0.08em 0.08em 0 rgba(255,255,255,.92), 0 0 26px rgba(0,0,0,.18);
-    letter-spacing: .03em;
+    letter-spacing: .02em;
     text-align: center;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-    hyphens: auto;
+    /* CRUCIAAL: Nooit afbreken */
+    white-space: nowrap;
 }
 
     #huidige-halte.pop {
@@ -191,163 +169,94 @@ main {
 
 @keyframes pop {
     0% {
-        transform: translateY(10px) scale(.99);
-        filter: blur(.6px);
+        transform: scale(.95);
+        filter: blur(2px);
     }
 
     70% {
-        transform: translateY(0) scale(1.03);
+        transform: scale(1.02);
         filter: blur(0);
     }
 
     100% {
-        transform: translateY(0) scale(1.0);
+        transform: scale(1.0);
     }
 }
 
-/* ROUTE LIST */
-.panel-route {
+/* ONDERKANT: VORIGE EN VOLGENDE */
+.bottom-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    height: 18vh;
+    min-height: 120px;
+}
+
+.info-box {
+    flex: 1;
+    background: rgba(255,255,255,.45);
+    border: 3px solid rgba(0,0,0,.08);
+    border-radius: 20px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,.1);
 }
 
-.route-title {
-    font-weight: 950;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    color: var(--rood);
-    font-size: clamp(1.2rem, 2.4vw, 2.0rem);
-    text-align: center;
-}
-
-.route-window {
-    position: relative;
-    overflow: hidden;
-    border-radius: 18px;
-    background: rgba(0,0,0,.06);
-    padding: 12px 12px 12px 46px;
-    height: clamp(260px, 44vh, 520px);
-    box-shadow: 0 10px 22px rgba(0,0,0,.10);
-}
-
-    .route-window::before {
-        content: "";
-        position: absolute;
-        left: 22px;
-        top: 12px;
-        bottom: 12px;
-        width: 4px;
-        border-radius: 999px;
-        background: rgba(0,0,0,.12);
+    .info-box.prev {
+        align-items: flex-start;
+        padding-left: 30px;
+        background: linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.3));
     }
 
-.route-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    will-change: transform;
-    transition: transform 520ms ease;
-}
+    .info-box.next {
+        align-items: flex-end;
+        padding-right: 30px;
+        background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.6));
+    }
 
-.route-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 52px 12px 12px; /* ruimte rechts voor pijl */
-    margin: 8px 0;
-    border-radius: 14px;
-    background: rgba(255,255,255,.26);
-    border: 2px solid rgba(0,0,0,.06);
+.sub-label {
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: .02em;
+    font-size: clamp(1.2rem, 2vw, 2.0rem);
+    color: var(--rood);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sub-val {
+    font-weight: 950;
+    text-transform: uppercase;
+    font-size: clamp(1.8rem, 3.5vw, 4.0rem); /* Flink groot */
     color: var(--zwart);
-    line-height: 1.05;
-    min-height: 58px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
 }
 
-    .route-item::before {
-        content: "";
-        position: absolute;
-        left: -34px;
-        width: 16px;
-        height: 16px;
-        border-radius: 999px;
-        background: rgba(0,0,0,.18);
-        border: 3px solid rgba(255,255,255,.70);
-    }
-
-    .route-item .txt {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        overflow-wrap: anywhere;
-        word-break: break-word;
-        hyphens: auto;
-        font-size: clamp(1.2rem, 2.2vw, 2.0rem);
-    }
-
-    /* ✅ OV-logica:
-   - is-prev = net gepasseerd (rood, dof)
-   - is-current = VÖLGEND (groen bol + pijl)
-   - is-next = daarna (geel bol)
-   - is-next2 = daarna (neutraal)
-*/
-..route-item.is-prev {
-    opacity: .62;
+.arrow-icon {
+    font-size: 1.2em;
+    color: var(--geel);
+    -webkit-text-stroke: 1px rgba(0,0,0,0.2);
 }
 
-.route-item.is-prev::before {
-    background: var(--rood);
-    border-color: rgba(255,255,255,.92);
-}
 
-.route-item.is-current {
-    background: rgba(255,212,0,.46); /* geel vak */
-    border-color: rgba(212,0,0,.20);
-    box-shadow: 0 10px 22px rgba(0,0,0,.12);
-}
-
-    .route-item.is-current::before {
-        background: var(--geel); /* geel bolletje */
-        border-color: rgba(255,255,255,.92);
-    }
-
-    .route-item.is-current::after {
-        content: "➜";
-        position: absolute;
-        right: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-weight: 1000;
-        font-size: 1.6em;
-        color: var(--geel);
-        text-shadow: 0 6px 14px rgba(0,0,0,.22);
-    }
-
-/* volgende = groen bolletje */
-.route-item.is-next::before {
-    background: var(--greun);
-    border-color: rgba(255,255,255,.92);
-}
-
-/* daarna neutraal */
-.route-item.is-next2::before {
-    background: rgba(0,0,0,.18);
-}
-
+/* FOOTER */
 footer {
     position: relative;
-    height: 9vh;
-    min-height: 54px;
+    height: 7vh;
+    min-height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 max(12px, 2vw);
-    padding-right: clamp(70px, 10vw, 140px); /* ruimte voor logo rechts */
+    padding-right: clamp(70px, 10vw, 140px);
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: .04em;
@@ -358,7 +267,6 @@ footer {
     overflow: hidden;
 }
 
-    /* subtiele donkere sluier achter tekst/logo (maakt wit veel beter leesbaar) */
     footer::before {
         content: "";
         position: absolute;
@@ -367,34 +275,26 @@ footer {
         pointer-events: none;
     }
 
-/* tekst boven de overlay */
 .footer-text {
     position: relative;
     z-index: 1;
     text-align: center;
-    padding: 0 10px;
     -webkit-text-stroke: 1.5px rgba(0,0,0,.35);
     text-shadow: 0 3px 0 rgba(0,0,0,.55), 0 10px 22px rgba(0,0,0,.45);
 }
 
-/* logo rechtsonder */
 .cv-logo {
     position: absolute;
     right: max(10px, 1.2vw);
     bottom: 50%;
     transform: translateY(50%);
-    /* 🔧 HIER kun je 'm tunen */
-    height: clamp(42px, 15vh, 360px);
-    width: auto !important;
-    max-height: clamp(42px, 15vh, 360px);
+    height: clamp(40px, 12vh, 120px);
+    width: auto;
     max-width: 220px;
-    display: block;
-    object-fit: contain;
-    filter: drop-shadow(0 10px 22px rgba(0,0,0,.45));
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,.45));
 }
 
-
-/* BIER OVERLAY */
+/* BIER */
 #bier-overlay {
     display: none;
     position: fixed;
@@ -402,102 +302,61 @@ footer {
     z-index: 9999;
     align-items: center;
     justify-content: center;
-    text-align: center;
     background: repeating-linear-gradient(135deg, var(--rood) 0 44px, var(--geel) 44px 88px);
     animation: strobe 0.85s linear infinite;
 }
 
 @keyframes strobe {
     0% {
-        filter: saturate(1.20) contrast(1.04);
+        filter: saturate(1.2);
     }
 
     50% {
-        filter: saturate(1.55) contrast(1.10);
+        filter: saturate(1.6);
     }
 
     100% {
-        filter: saturate(1.20) contrast(1.04);
+        filter: saturate(1.2);
     }
 }
 
 .bier-kaart {
-    width: min(92vw, 1200px);
-    padding: min(5vh, 48px) min(5vw, 56px);
+    width: 90vw;
+    padding: 5vh;
     border-radius: 34px;
-    background: rgba(0,0,0,.18);
-    box-shadow: 0 18px 60px rgba(0,0,0,.35);
-    border: 4px solid rgba(255,255,255,.22);
-    backdrop-filter: blur(10px);
+    background: rgba(0,0,0,.3);
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    border: 4px solid rgba(255,255,255,.5);
+    backdrop-filter: blur(15px);
+    text-align: center;
 }
 
 #bier-tekst-groot {
-    margin-top: min(2.2vh, 18px);
-    font-size: clamp(2.2rem, 8.5vw, 6.2rem);
+    font-size: clamp(3rem, 10vw, 8rem);
     font-weight: 1000;
     color: var(--geel);
-    line-height: 1.02;
     text-transform: uppercase;
-    text-shadow: 0 10px 28px rgba(0,0,0,.45);
+    text-shadow: 0 10px 30px rgba(0,0,0,.6);
     animation: bierPulse .65s ease-in-out infinite;
 }
 
 @keyframes bierPulse {
     0% {
         transform: scale(1);
-        opacity: 1;
     }
 
     50% {
-        transform: scale(.97);
-        opacity: .74;
+        transform: scale(.95);
     }
 
     100% {
         transform: scale(1);
-        opacity: 1;
     }
-}
-
-.bier-sub {
-    margin-top: min(2vh, 16px);
-    font-weight: 950;
-    text-transform: uppercase;
-    color: rgba(255,255,255,.92);
-    font-size: clamp(1.2rem, 3vw, 2.4rem);
-    letter-spacing: .05em;
 }
 
 #bier-naam-tekst {
-    margin-top: 0;
-    font-size: clamp(3.0rem, 12vw, 9rem);
+    font-size: clamp(2rem, 6vw, 5rem);
     font-weight: 1000;
     color: var(--wit);
     text-transform: uppercase;
-    text-shadow: 0 10px 28px rgba(0,0,0,.45);
-    overflow-wrap: anywhere;
-    word-break: break-word;
-    hyphens: auto;
-    letter-spacing: .04em;
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-    .board-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .route-window {
-        height: clamp(220px, 34vh, 420px);
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    #bier-overlay, #bier-tekst-groot, #huidige-halte.pop {
-        animation: none !important;
-    }
-
-    .route-list {
-        transition: none !important;
-    }
 }

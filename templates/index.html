@@ -9,45 +9,48 @@
 
 <body class="carnaval">
     <header class="topbar">
-        <!-- masker weg, maar spacer houdt titel mooi in 't midden -->
         <div class="topbar-spacer" aria-hidden="true"></div>
         <div id="titel">Eesjte Zittesje Vaerdeins</div>
         <div id="klok" aria-label="Kloek">--:--</div>
     </header>
 
     <main>
-        <section class="board" role="region" aria-label="Veerdèins-infoo">
-            <div class="board-grid">
+        <section class="board" role="region" aria-label="Route Info">
 
-                <!-- LINKS: VÖLGEND -->
-                <div class="panel panel-current">
-                    <div class="current-head">
-                        <div class="label" id="volgende-tekst">Völgende sjtop</div>
-                    </div>
+            <div class="top-label-container">
+                <div class="label" id="volgende-tekst">Völgende sjtop</div>
+            </div>
 
-                    <div class="current-name-wrap" id="halte-wrap" aria-label="Völgende sjtop">
-                        <div id="huidige-halte">Laje...</div>
+            <div class="main-display" id="halte-wrap">
+                <div id="huidige-halte">Laje...</div>
+            </div>
+
+            <div class="bottom-info">
+                <div class="info-box prev">
+                    <div class="sub-label">
+                        <span class="arrow-icon">⬅</span>
+                        <span>Net gewaes</span>
                     </div>
+                    <div class="sub-val" id="vorige-tekst">...</div>
                 </div>
 
-                <!-- RECHTS: SJTOPPE -->
-                <aside class="panel panel-route" aria-label="Sjtoppe">
-                    <div class="route-title">Sjtoppe</div>
-                    <div class="route-window" id="route-window">
-                        <ul id="halte-lijst" class="route-list" aria-label="Lies vaan sjtoppe"></ul>
+                <div class="info-box next">
+                    <div class="sub-label">
+                        <span>Hie-nao</span>
+                        <span class="arrow-icon">➜</span>
                     </div>
-                </aside>
-
+                    <div class="sub-val" id="daarna-tekst">...</div>
+                </div>
             </div>
+
         </section>
     </main>
 
     <footer>
         <div class="footer-text">Dees veerdèins wurt aangebaoje door CV Opnuuj Begoosj</div>
-        <img class="cv-logo" src="{{ url_for('static', filename='cv-logo.png') }}" alt="CV Opnuuj Begoosj logo">
+        <img class="cv-logo" src="{{ url_for('static', filename='cv-logo.png') }}" alt="Logo">
     </footer>
 
-    <!-- BIER OVERLAY -->
     <div id="bier-overlay" aria-hidden="true">
         <div class="bier-kaart">
             <div id="bier-naam-tekst">—</div>
