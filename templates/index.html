@@ -9,17 +9,16 @@
 
 <body class="carnaval">
     <header class="topbar">
-        <!-- masker weg, maar spacer houdt titel mooi in 't midden -->
-        <div class="topbar-spacer" aria-hidden="true"></div>
-        <div id="titel">Eesjte Zittesje Vaerdeins</div>
-        <div id="klok" aria-label="Kloek">--:--</div>
+        <div id="titel-container">
+            <img class="header-logo" src="{{ url_for('static', filename='cv-logo.jpg') }}" alt="Logo">
+            <div id="titel">CV Opnuuj Begoosj: Eesjte Zittesje Vaerdeins</div>
+        </div>
     </header>
 
     <main>
         <section class="board" role="region" aria-label="Veerdèins-infoo">
             <div class="board-grid">
 
-                <!-- LINKS: VÖLGEND -->
                 <div class="panel panel-current">
                     <div class="current-head">
                         <div class="label" id="volgende-tekst">Völgende sjtop</div>
@@ -30,7 +29,6 @@
                     </div>
                 </div>
 
-                <!-- RECHTS: SJTOPPE -->
                 <aside class="panel panel-route" aria-label="Sjtoppe">
                     <div class="route-title">Sjtoppe</div>
                     <div class="route-window" id="route-window">
@@ -42,12 +40,6 @@
         </section>
     </main>
 
-    <footer>
-        <div class="footer-text">Dees veerdèins wurt aangebaoje door CV Opnuuj Begoosj</div>
-        <img class="cv-logo" src="{{ url_for('static', filename='cv-logo.png') }}" alt="CV Opnuuj Begoosj logo">
-    </footer>
-
-    <!-- BIER OVERLAY -->
     <div id="bier-overlay" aria-hidden="true">
         <div class="bier-kaart">
             <div id="bier-naam-tekst">—</div>
