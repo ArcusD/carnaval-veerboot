@@ -30,7 +30,7 @@ body {
     min-height: 100px;
     max-height: 160px;
     display: flex;
-    align-items: center; /* Verticaal centreren */
+    align-items: center;
     justify-content: space-between;
     padding: 0 2vw;
     background: repeating-linear-gradient( 45deg, var(--rood) 0 28px, var(--geel) 28px 56px, var(--greun) 56px 84px );
@@ -51,6 +51,7 @@ body {
     padding: 5px 0;
     display: flex;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .header-logo {
@@ -61,24 +62,31 @@ body {
     z-index: 2;
 }
 
+/* TITEL CONTAINER: Neemt alle overgebleven ruimte in */
+#titel-container {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Rechts uitlijnen */
+    overflow: hidden; /* Belangrijk: voorkomt uitrekken van de pagina */
+    margin-left: 20px;
+    z-index: 2;
+}
+
 #titel {
     font-weight: 950;
     text-transform: uppercase;
     text-align: right;
     white-space: nowrap;
-    /* Iets aangepaste font-size voor betere fit */
-    font-size: clamp(1.5rem, 4.2vw, 4.8rem);
-    line-height: 1.2; /* Iets meer lucht in de regel */
+    /* Start GROOT. JS maakt hem kleiner tot het past */
+    font-size: 6rem;
+    line-height: 1.1;
     color: var(--wit);
     text-shadow: 0 4px 0 rgba(0,0,0,.5), 0 10px 25px rgba(0,0,0,.5);
     -webkit-text-stroke: 2px rgba(0,0,0,.4);
-    z-index: 2;
-    flex: 1;
-    margin-left: 30px;
-    margin-right: 10px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    /* Flex eigenschappen om te zorgen dat JS de breedte snapt */
+    display: inline-block;
 }
 
 /* MAIN */
@@ -190,9 +198,8 @@ main {
     justify-content: flex-end;
 }
 
-/* AANGEPAST: Tekst groter gemaakt */
 .sec-name {
-    font-size: clamp(1.8rem, 4.0vw, 4.0rem); /* Fors groter */
+    font-size: clamp(1.8rem, 4.0vw, 4.0rem);
     font-weight: 900;
     text-transform: uppercase;
     color: var(--zwart);
@@ -299,12 +306,14 @@ main {
         height: 70px;
     }
 
+    #titel-container {
+        width: 100%;
+        justify-content: center;
+        margin: 0;
+    }
+
     #titel {
         text-align: center;
-        margin: 0;
-        white-space: normal;
-        font-size: 1.8rem;
-        justify-content: center;
     }
 
     .secondary-row {

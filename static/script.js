@@ -5,14 +5,16 @@
 
     const elHugeText = document.getElementById('huge-text');
     const elHugeWrap = document.getElementById('huge-wrap');
-
     const elPrevText = document.getElementById('prev-text');
     const elNextText = document.getElementById('next-text');
-
     const elBierOverlay = document.getElementById('bier-overlay');
     const elBierNaam = document.getElementById('bier-naam-tekst');
 
-    if (!elHugeText || !elPrevText || !elNextText) return;
+    // Header elementen voor resizing
+    const elTitel = document.getElementById('titel');
+    const elTitelContainer = document.getElementById('titel-container');
+
+    if (!elHugeText) return;
 
     let haltes = [];
     let idx = 0;
@@ -22,19 +24,39 @@
 
     const clean = (v) => (v ?? "").toString().trim();
 
-    // Resize functie
+    // Resize functie voor de hoofdhalte (bestaand)
     function fitToBox(elText, elBox, minPx = 40, maxPx = 500) {
         if (!elText || !elBox) return;
         elText.style.fontSize = maxPx + "px";
-
         let size = maxPx;
         const boxW = elBox.clientWidth * 0.96;
         const boxH = elBox.clientHeight * 0.90 || 200;
-
         while (size > minPx) {
             if (elText.scrollWidth <= boxW && elText.scrollHeight <= boxH) break;
             size = size * 0.90;
             elText.style.fontSize = size + "px";
+        }
+    }
+
+    // NIEUWE resize functie specifiek voor de header titel
+    function fitHeaderTitle() {
+        if (!elTitel || !elTitelContainer) return;
+
+        // Begin groot
+        let size = 120; // Start pixels (ongeveer 7.5rem)
+        elTitel.style.fontSize = size + "px";
+
+        // De container breedte is de ruimte die overblijft naast het logo
+        const availableW = elTitelContainer.clientWidth;
+        const availableH = elTitelContainer.clientHeight;
+
+        while (size > 16) { // Minimum grootte
+            // Past het in de breedte én hoogte?
+            if (elTitel.scrollWidth <= availableW && elTitel.scrollHeight <= availableH) {
+                break;
+            }
+            size = size * 0.95; // Stapjes van 5% kleiner
+            elTitel.style.fontSize = size + "px";
         }
     }
 
@@ -51,7 +73,6 @@
 
     function render() {
         const total = haltes.length;
-
         if (total === 0) {
             elHugeText.textContent = "Gein sjtoppe";
             elPrevText.textContent = "—";
@@ -62,14 +83,11 @@
 
         if (idx >= total) idx = 0;
 
-        // Huidige
         elHugeText.textContent = clean(haltes[idx]) || "—";
 
-        // Vorige
         const idxPrev = ((idx - 1) % total + total) % total;
         elPrevText.textContent = clean(haltes[idxPrev]) || "—";
 
-        // Volgende
         const idxNext = (idx + 1) % total;
         elNextText.textContent = clean(haltes[idxNext]) || "—";
 
@@ -90,7 +108,6 @@
             const r = await fetch('/api/haltes', { cache: 'no-store' });
             const data = await r.json();
             if (!Array.isArray(data)) return;
-
             const json = JSON.stringify(data);
             if (json !== lastJson) {
                 lastJson = json;
@@ -137,7 +154,11 @@
     checkBierStatus();
     setInterval(checkBierStatus, BIER_MS);
 
+    // Initial header fit
+    requestAnimationFrame(fitHeaderTitle);
+
     window.addEventListener('resize', () => {
         fitToBox(elHugeText, elHugeWrap);
+        fitHeaderTitle();
     });
 })();
