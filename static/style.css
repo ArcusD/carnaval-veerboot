@@ -26,11 +26,11 @@ body {
 /* HEADER */
 .topbar {
     position: relative;
-    height: 18vh; /* Vaste hoogte */
+    height: 18vh;
     min-height: 100px;
     max-height: 160px;
     display: flex;
-    align-items: center;
+    align-items: center; /* Verticaal centreren */
     justify-content: space-between;
     padding: 0 2vw;
     background: repeating-linear-gradient( 45deg, var(--rood) 0 28px, var(--geel) 28px 56px, var(--greun) 56px 84px );
@@ -66,34 +66,37 @@ body {
     text-transform: uppercase;
     text-align: right;
     white-space: nowrap;
-    font-size: clamp(1.5rem, 4.0vw, 5.0rem);
-    line-height: 1;
+    /* Iets aangepaste font-size voor betere fit */
+    font-size: clamp(1.5rem, 4.2vw, 4.8rem);
+    line-height: 1.2; /* Iets meer lucht in de regel */
     color: var(--wit);
     text-shadow: 0 4px 0 rgba(0,0,0,.5), 0 10px 25px rgba(0,0,0,.5);
     -webkit-text-stroke: 2px rgba(0,0,0,.4);
     z-index: 2;
     flex: 1;
-    margin-left: 20px;
+    margin-left: 30px;
+    margin-right: 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 /* MAIN */
 main {
-    flex: 1; /* Pakt de rest van het scherm */
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: min(2vh, 20px);
-    overflow: hidden; /* Voorkomt scrollbalken */
+    overflow: hidden;
 }
 
-/* HET BORD (OMVATTEND KADER) */
 .board {
     width: 100%;
     max-width: 1700px;
-    height: 100%; /* Vul de main */
+    height: 100%;
     display: flex;
     flex-direction: column;
-    /* De styling van het bord zelf */
     background: rgba(255,255,255,.35);
     border: 4px solid rgba(0,0,0,.1);
     border-radius: 30px;
@@ -106,13 +109,13 @@ main {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 2vh; /* Ruimte tussen boven en onder */
+    gap: 2vh;
     height: 100%;
 }
 
-/* BOVENSTE GEDEELTE (GROOT) */
+/* BOVENSTE GEDEELTE */
 .huge-stop-container {
-    flex: 3; /* Krijgt de meeste ruimte */
+    flex: 3;
     display: flex;
     flex-direction: column;
     background: rgba(255,255,255,.4);
@@ -159,9 +162,9 @@ main {
     text-align: center;
 }
 
-/* ONDERSTE GEDEELTE (2 VAKKEN) */
+/* ONDERSTE GEDEELTE */
 .secondary-row {
-    flex: 1; /* Minder hoog dan boven */
+    flex: 1;
     min-height: 80px;
     max-height: 18vh;
     display: flex;
@@ -169,7 +172,7 @@ main {
 }
 
 .sub-panel {
-    flex: 1; /* Eerlijk verdelen */
+    flex: 1;
     display: flex;
     align-items: center;
     background: rgba(255,255,255,.5);
@@ -187,8 +190,9 @@ main {
     justify-content: flex-end;
 }
 
+/* AANGEPAST: Tekst groter gemaakt */
 .sec-name {
-    font-size: clamp(1.2rem, 2.5vw, 2.5rem);
+    font-size: clamp(1.8rem, 4.0vw, 4.0rem); /* Fors groter */
     font-weight: 900;
     text-transform: uppercase;
     color: var(--zwart);
@@ -208,7 +212,7 @@ main {
     flex-shrink: 0;
 }
 
-/* ANIMATIES / BIER (Ongewijzigd) */
+/* ANIMATIES / BIER */
 .pop {
     animation: popIn .5s cubic-bezier(0.25, 1.5, 0.5, 1);
 }
@@ -300,6 +304,7 @@ main {
         margin: 0;
         white-space: normal;
         font-size: 1.8rem;
+        justify-content: center;
     }
 
     .secondary-row {
