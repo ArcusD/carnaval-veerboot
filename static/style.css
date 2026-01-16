@@ -19,24 +19,20 @@ body {
     flex-direction: column;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     color: var(--zwart);
-    /* Confetti achtergrond */
     background: radial-gradient(circle, rgba(212,0,0,.95) 0 5px, transparent 6px) 0 0/70px 70px, radial-gradient(circle, rgba(0,153,51,.95) 0 5px, transparent 6px) 22px 34px/86px 86px, radial-gradient(circle, rgba(255,212,0,.95) 0 5px, transparent 6px) 44px 10px/78px 78px, radial-gradient(circle, rgba(16,16,21,.35) 0 4px, transparent 5px) 12px 58px/110px 110px, radial-gradient(circle at 20% 12%, rgba(255,255,255,.55), transparent 55%), radial-gradient(circle at 85% 25%, rgba(255,255,255,.35), transparent 60%), linear-gradient(180deg, var(--geel) 0%, rgba(255,239,133,1) 45%, var(--geel) 100%);
     background-attachment: fixed;
 }
 
-/* --- HEADER FIX --- */
+/* HEADER */
 .topbar {
     position: relative;
-    /* Balk iets hoger gemaakt voor ruimte */
-    height: 20vh;
-    min-height: 110px;
-    max-height: 180px;
+    height: 18vh; /* Vaste hoogte */
+    min-height: 100px;
+    max-height: 160px;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Duwt logo links, tekst rechts */
-
-    padding: 0 2vw; /* Minimale padding zijkant */
-
+    justify-content: space-between;
+    padding: 0 2vw;
     background: repeating-linear-gradient( 45deg, var(--rood) 0 28px, var(--geel) 28px 56px, var(--greun) 56px 84px );
     box-shadow: 0 6px 25px rgba(0,0,0,.40);
     z-index: 10;
@@ -51,8 +47,8 @@ body {
     }
 
 .logo-container {
-    height: 100%; /* Volle hoogte */
-    padding: 5px 0; /* Klein beetje ademruimte boven/onder */
+    height: 100%;
+    padding: 5px 0;
     display: flex;
     align-items: center;
 }
@@ -69,54 +65,61 @@ body {
     font-weight: 950;
     text-transform: uppercase;
     text-align: right;
-    /* Zorg dat tekst nooit wrapt */
     white-space: nowrap;
-    /* Dynamische grootte, maar maximaal passend */
-    font-size: clamp(1.5rem, 4.5vw, 5.5rem);
+    font-size: clamp(1.5rem, 4.0vw, 5.0rem);
     line-height: 1;
     color: var(--wit);
     text-shadow: 0 4px 0 rgba(0,0,0,.5), 0 10px 25px rgba(0,0,0,.5);
     -webkit-text-stroke: 2px rgba(0,0,0,.4);
     z-index: 2;
-    flex: 1; /* Neemt overige ruimte in */
-    margin-left: 20px; /* Afstand tot logo */
+    flex: 1;
+    margin-left: 20px;
 }
 
-/* --- MAIN --- */
+/* MAIN */
 main {
-    flex: 1;
+    flex: 1; /* Pakt de rest van het scherm */
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: min(3vh, 30px);
-    overflow: hidden;
+    padding: min(2vh, 20px);
+    overflow: hidden; /* Voorkomt scrollbalken */
 }
 
-.board { /* Niet direct gebruikt in HTML nu, maar voor zekerheid */
-    width: 100%;
-    height: 100%;
-}
-
-.central-dashboard {
+/* HET BORD (OMVATTEND KADER) */
+.board {
     width: 100%;
     max-width: 1700px;
-    height: 100%;
+    height: 100%; /* Vul de main */
     display: flex;
     flex-direction: column;
-    gap: 3vh;
-}
-
-/* GROTE VAK */
-.huge-stop-container {
-    flex: 2.5; /* Iets meer ruimte dan onderkant */
-    display: flex;
-    flex-direction: column;
+    /* De styling van het bord zelf */
     background: rgba(255,255,255,.35);
     border: 4px solid rgba(0,0,0,.1);
     border-radius: 30px;
     box-shadow: var(--shadow);
     backdrop-filter: blur(15px);
-    padding: 20px;
+    padding: 2vh 2vw;
+}
+
+.central-dashboard {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh; /* Ruimte tussen boven en onder */
+    height: 100%;
+}
+
+/* BOVENSTE GEDEELTE (GROOT) */
+.huge-stop-container {
+    flex: 3; /* Krijgt de meeste ruimte */
+    display: flex;
+    flex-direction: column;
+    background: rgba(255,255,255,.4);
+    border: 3px solid rgba(0,0,0,.1);
+    border-radius: 25px;
+    padding: 15px;
+    box-shadow: inset 0 0 20px rgba(255,255,255,.5);
     overflow: hidden;
 }
 
@@ -124,11 +127,12 @@ main {
     text-align: center;
     font-weight: 950;
     text-transform: uppercase;
-    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-size: clamp(1.5rem, 2.5vw, 2.2rem);
     color: var(--wit);
-    text-shadow: 0 3px 8px rgba(0,0,0,.5);
+    text-shadow: 0 2px 5px rgba(0,0,0,.5);
     -webkit-text-stroke: 1px rgba(0,0,0,.4);
-    margin-bottom: 15px;
+    margin-bottom: 1vh;
+    flex-shrink: 0;
 }
 
 .resize-wrap {
@@ -139,11 +143,10 @@ main {
     justify-content: center;
     width: 100%;
     overflow: hidden;
-    background: linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,.3));
+    background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.4));
     border: 6px solid rgba(255,212,0,0.8);
-    box-shadow: inset 0 0 30px rgba(0,0,0,.1);
     border-radius: 20px;
-    padding: 10px;
+    padding: 5px;
 }
 
 #huge-text {
@@ -156,57 +159,56 @@ main {
     text-align: center;
 }
 
-/* ONDERSTE BALK AANGEPAST */
+/* ONDERSTE GEDEELTE (2 VAKKEN) */
 .secondary-row {
-    flex: 1;
+    flex: 1; /* Minder hoog dan boven */
+    min-height: 80px;
+    max-height: 18vh;
     display: flex;
-    justify-content: space-between; /* Links en Rechts uit elkaar */
-    gap: 30px;
+    gap: 2vw;
 }
 
-.sec-group {
-    flex: 1;
+.sub-panel {
+    flex: 1; /* Eerlijk verdelen */
     display: flex;
     align-items: center;
-    background: rgba(255,255,255,.4);
+    background: rgba(255,255,255,.5);
     border: 3px solid rgba(0,0,0,.1);
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.2);
-    backdrop-filter: blur(10px);
-    padding: 10px 25px;
-    overflow: hidden;
+    padding: 0 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,.15);
 }
 
-.group-left {
+.left-panel {
     justify-content: flex-start;
 }
 
-.group-right {
+.right-panel {
     justify-content: flex-end;
 }
 
 .sec-name {
-    flex: 1;
-    font-size: clamp(1.5rem, 3.5vw, 3.0rem);
+    font-size: clamp(1.2rem, 2.5vw, 2.5rem);
     font-weight: 900;
     text-transform: uppercase;
     color: var(--zwart);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-align: center;
     padding: 0 15px;
+    flex: 1;
+    text-align: center;
 }
 
 .arrow-icon {
-    font-size: clamp(3rem, 5vw, 4.5rem);
+    font-size: clamp(2.5rem, 4vw, 4rem);
     color: var(--rood);
-    text-shadow: 0 2px 5px rgba(0,0,0,.3);
+    text-shadow: 0 2px 4px rgba(0,0,0,.3);
     line-height: 1;
-    flex-shrink: 0; /* Pijl mag niet krimpen */
+    flex-shrink: 0;
 }
 
-/* Animaties en Bier Overlay */
+/* ANIMATIES / BIER (Ongewijzigd) */
 .pop {
     animation: popIn .5s cubic-bezier(0.25, 1.5, 0.5, 1);
 }
@@ -286,28 +288,29 @@ main {
     .topbar {
         flex-direction: column;
         height: auto;
-        padding: 15px;
-        text-align: center;
+        padding: 10px;
     }
 
     .header-logo {
-        height: 80px;
-        width: auto;
+        height: 70px;
     }
 
     #titel {
         text-align: center;
-        font-size: 2rem;
+        margin: 0;
         white-space: normal;
-        margin-left: 0;
+        font-size: 1.8rem;
     }
 
     .secondary-row {
-        flex-direction: column;
         gap: 10px;
     }
 
-    .sec-group {
-        justify-content: center;
+    .sub-panel {
+        padding: 0 10px;
+    }
+
+    .arrow-icon {
+        font-size: 2rem;
     }
 }

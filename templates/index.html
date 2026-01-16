@@ -4,16 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Eesjte Zittesje Vaerdeins</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=3">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=5">
 </head>
 
 <body class="carnaval">
     <header class="topbar">
-        <img class="header-logo"
-             src="{{ url_for('static', filename='cv-logo.png') }}"
-             alt="Logo"
-             style="height: 85%; width: auto;">
-
+        <div class="logo-container">
+            <img class="header-logo" src="{{ url_for('static', filename='cv-logo.png') }}" alt="Logo">
+        </div>
         <div id="titel">CV Opnuuj Begoosj: Eesjte Zittesje Vaerdeins</div>
     </header>
 
@@ -29,17 +27,17 @@
                 </div>
 
                 <div class="secondary-row">
-                    <div class="sec-stop-wrap">
-                        <span class="sec-label">Veurige:</span>
+
+                    <div class="sub-panel left-panel">
+                        <span class="arrow-icon">⬅</span>
                         <span id="prev-text" class="sec-name">—</span>
                     </div>
 
-                    <div class="sec-separator">➜</div>
-
-                    <div class="sec-stop-wrap sec-next">
-                        <span class="sec-label">Hie-nao:</span>
+                    <div class="sub-panel right-panel">
                         <span id="next-text" class="sec-name">—</span>
+                        <span class="arrow-icon">➡</span>
                     </div>
+
                 </div>
 
             </div>
@@ -53,6 +51,6 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}?v=3"></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=5"></script>
 </body>
 </html>
