@@ -25,48 +25,36 @@
 
     const clean = (v) => (v ?? "").toString().trim();
 
-    // Functie om tekst passend te maken in een container (voor hoofdhalte én lijst)
-    // minPx bepaalt hoe klein het mag worden
+    // Resize logica (past tekst aan zodat het op 1 regel blijft)
     function fitToBox(elText, elBox, minPx = 14, maxPx = 150) {
         if (!elText || !elBox) return;
-
-        // Reset eerst naar redelijk groot
         elText.style.fontSize = maxPx + "px";
 
-        // Binary search of simple loop om te verkleinen tot het past
-        // We doen een simpele loop omlaag voor precisie
         let size = maxPx;
-
-        // Extra veiligheid: gebruik scrollWidth vs clientWidth
-        // Voor de lijst items (die flex zijn) moeten we naar de parent kijken
         const boxW = elBox.clientWidth;
-        const boxH = elBox.clientHeight || 100; // fallback
+        const boxH = elBox.clientHeight || 100;
 
+        // Simpele loop om te verkleinen
         while (size > minPx) {
-            // Check of het past. We geven wat marge (0.95)
+            // 95% breedte marge
             if (elText.scrollWidth <= boxW * 0.95 && elText.scrollHeight <= boxH) {
                 break;
             }
-            size = size * 0.90; // verklein met 10%
+            size = size * 0.90;
             elText.style.fontSize = size + "px";
         }
     }
 
-    // Specifieke resize loop voor alle route items
     function resizeAllRouteItems() {
         const items = elRouteLst.querySelectorAll('.route-item');
         items.forEach(li => {
             const span = li.querySelector('.txt');
-            // We gebruiken de LI als box. 
-            // Omdat er pijltjes zijn (::before/::after), trekken we wat breedte af.
-            // Pijlen zijn ong 1.2em. Laten we veilig rekenen.
             if (span) {
-                // Reset
-                span.style.fontSize = "3.5rem";
-                // Check overflow
+                span.style.fontSize = "3.5rem"; // Start groot
                 let safety = 20;
                 while (safety-- > 0) {
-                    if (span.scrollWidth < li.clientWidth * 0.80) break; // 80% breedte ivm pijlen
+                    // 75% breedte ivm pijltjes links/rechts
+                    if (span.scrollWidth < li.clientWidth * 0.75) break;
                     const cur = parseFloat(getComputedStyle(span).fontSize);
                     if (cur < 12) break;
                     span.style.fontSize = (cur * 0.90) + "px";
@@ -117,7 +105,6 @@
             elRouteLst.appendChild(li);
         });
 
-        // Meteen resizen na bouwen
         requestAnimationFrame(() => {
             resizeAllRouteItems();
             centerCurrent(true);
@@ -131,7 +118,6 @@
 
         elRouteLst.style.transition = skipTransition ? "none" : "";
 
-        // Centreer de actieve item in het venster
         const centerY = elRouteWin.clientHeight / 2;
         const target = centerY - (cur.offsetTop + cur.offsetHeight / 2);
         elRouteLst.style.transform = `translate3d(0, ${target}px, 0)`;
@@ -165,8 +151,6 @@
         buildRouteListIfNeeded();
         markRoute();
         centerCurrent(false);
-
-        // Resize hoofdbord
         fitToBox(elHalte, elWrap, 20, 300);
     }
 
@@ -212,7 +196,6 @@
         } catch (e) { }
     }
 
-    // Init
     fetchConfig();
     setInterval(fetchConfig, CONFIG_MS);
 

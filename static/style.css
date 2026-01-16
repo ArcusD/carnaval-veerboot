@@ -5,7 +5,6 @@
     --zwart: #101015;
     --wit: #ffffff;
     --shadow: 0 16px 54px rgba(0,0,0,.30);
-    --soft: 0 10px 26px rgba(0,0,0,.16);
 }
 
 * {
@@ -20,22 +19,24 @@ body {
     flex-direction: column;
     font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
     color: var(--zwart);
+    /* Achtergrond met confetti effect */
     background: radial-gradient(circle, rgba(212,0,0,.95) 0 5px, transparent 6px) 0 0/70px 70px, radial-gradient(circle, rgba(0,153,51,.95) 0 5px, transparent 6px) 22px 34px/86px 86px, radial-gradient(circle, rgba(255,212,0,.95) 0 5px, transparent 6px) 44px 10px/78px 78px, radial-gradient(circle, rgba(16,16,21,.35) 0 4px, transparent 5px) 12px 58px/110px 110px, radial-gradient(circle at 20% 12%, rgba(255,255,255,.55), transparent 55%), radial-gradient(circle at 85% 25%, rgba(255,255,255,.35), transparent 60%), linear-gradient(180deg, var(--geel) 0%, rgba(255,239,133,1) 45%, var(--geel) 100%);
     background-attachment: fixed;
 }
 
-/* HEADER */
+/* --- HEADER FIX --- */
 .topbar {
     position: relative;
-    height: 18vh; /* Iets hoger voor het logo */
-    min-height: 100px;
-    padding: 10px 2vw;
+    height: 16vh; /* Hoogte is relatief aan scherm */
+    min-height: 90px; /* Maar nooit te klein */
+    max-height: 140px; /* En nooit te groot */
+    padding: 0 2vw;
     display: flex;
     align-items: center;
-    justify-content: center;
-    /* Rood - Geel - Groen patroon */
+    justify-content: center; /* Alles in het midden */
     background: repeating-linear-gradient( 45deg, var(--rood) 0 28px, var(--geel) 28px 56px, var(--greun) 56px 84px );
     box-shadow: 0 6px 18px rgba(0,0,0,.30);
+    z-index: 10;
 }
 
     .topbar::after {
@@ -46,52 +47,51 @@ body {
         pointer-events: none;
     }
 
-#titel-container {
+.header-content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 30px; /* Ruimte tussen logo en tekst */
+    height: 100%;
     width: 100%;
-    max-width: 95%;
+    max-width: 1800px;
 }
 
+/* Dubbele beveiliging voor het logo in CSS */
 .header-logo {
-    height: clamp(60px, 14vh, 160px);
+    height: 85% !important; /* Forceer hoogte binnen de balk */
     width: auto;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
 }
 
 #titel {
     font-weight: 950;
     text-transform: uppercase;
-    letter-spacing: .04em;
-    /* Fors groter */
-    font-size: clamp(1.8rem, 5.5vw, 5.0rem);
+    font-size: clamp(1.5rem, 4.0vw, 4.2rem);
     line-height: 1.1;
     color: var(--wit);
     text-shadow: 0 4px 0 rgba(0,0,0,.45), 0 10px 22px rgba(0,0,0,.45);
-    -webkit-text-stroke: 2px rgba(0,0,0,.35);
-    text-align: left;
+    -webkit-text-stroke: 1.5px rgba(0,0,0,.35);
 }
 
-/* MAIN */
+/* --- MAIN --- */
 main {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: min(2vh, 16px) min(2vw, 20px);
-    /* Omdat de footer weg is, mag main alle ruimte pakken */
+    overflow: hidden;
 }
 
 .board {
     width: 100%;
     max-width: 1800px;
-    height: 100%; /* Vul de main */
-    max-height: 95vh;
-    padding: min(2.0vh, 20px) min(2.0vw, 20px);
+    height: 100%;
+    padding: min(2.0vh, 20px);
     border-radius: 28px;
     background: rgba(255,255,255,.30);
     border: 4px solid rgba(0,0,0,.08);
@@ -104,10 +104,10 @@ main {
 .board-grid {
     display: grid;
     grid-template-columns: 1.35fr 1fr;
-    gap: min(2.6vw, 22px);
+    gap: 20px;
     align-items: stretch;
     flex: 1;
-    height: 100%;
+    overflow: hidden;
 }
 
 .panel {
@@ -115,14 +115,14 @@ main {
     background: rgba(255,255,255,.26);
     border: 3px solid rgba(0,0,0,.08);
     box-shadow: 0 10px 24px rgba(0,0,0,.12);
-    padding: min(2.0vh, 20px) min(2.0vw, 20px);
+    padding: 20px;
     display: flex;
     flex-direction: column;
 }
 
-/* LINKER KANT */
+/* LINKS */
 .panel-current {
-    justify-content: center;
+    justify-content: flex-start;
     position: relative;
     overflow: hidden;
 }
@@ -130,7 +130,8 @@ main {
 .current-head {
     display: flex;
     justify-content: center;
-    margin-bottom: min(1.8vh, 12px);
+    margin-bottom: 12px;
+    flex-shrink: 0;
 }
 
 .label {
@@ -169,7 +170,7 @@ main {
     color: var(--zwart);
     text-shadow: 0.08em 0.08em 0 rgba(255,255,255,.92);
     text-align: center;
-    white-space: nowrap; /* Forceer 1 regel */
+    white-space: nowrap;
 }
 
     #huidige-halte.pop {
@@ -192,7 +193,7 @@ main {
     }
 }
 
-/* RECHTER KANT: LIJST */
+/* RECHTS */
 .panel-route {
     display: flex;
     flex-direction: column;
@@ -212,10 +213,9 @@ main {
 .route-window {
     position: relative;
     flex: 1;
-    overflow: hidden; /* Verberg scrollbar, JS doet centreren */
+    overflow: hidden;
     background: rgba(0,0,0,.04);
     border-radius: 18px;
-    /* Geen padding links meer nodig voor bolletjes lijn */
     padding: 10px;
 }
 
@@ -230,8 +230,8 @@ main {
 .route-item {
     display: flex;
     align-items: center;
-    justify-content: center; /* Alles centreren */
-    gap: 10px; /* Ruimte tussen pijlen en tekst */
+    justify-content: center;
+    gap: 15px;
     margin: 6px 0;
     padding: 8px 10px;
     border-radius: 14px;
@@ -239,11 +239,10 @@ main {
     border: 2px solid transparent;
     color: var(--zwart);
     min-height: 60px;
-    opacity: 0.7; /* Standaard ietsje lichter */
+    opacity: 0.7;
     transition: opacity 0.3s, transform 0.3s;
 }
 
-    /* De Tekst */
     .route-item .txt {
         font-weight: 900;
         text-transform: uppercase;
@@ -252,24 +251,20 @@ main {
         line-height: 1;
     }
 
-    /* Pijltjes voor en na */
-    .route-item::before,
-    .route-item::after {
+    .route-item::before, .route-item::after {
         content: "➜";
         font-weight: 900;
-        font-size: 1.2em; /* Relatief aan de tekstgrootte */
+        font-size: 1.4em;
         color: var(--rood);
-        opacity: 0; /* Standaard onzichtbaar */
+        opacity: 0;
     }
 
     .route-item::after {
-        transform: scaleX(-1); /* Pijl omdraaien voor symmetrie: > TEKST < */
-        color: var(--rood);
+        transform: scaleX(-1);
     }
 
-    /* ACTIEVE ITEM (Midden) */
     .route-item.is-current {
-        background: rgba(255,212,0,.6); /* Geel */
+        background: rgba(255,212,0,.6);
         border-color: var(--rood);
         box-shadow: 0 8px 20px rgba(0,0,0,.15);
         opacity: 1;
@@ -277,15 +272,11 @@ main {
         transform: scale(1.02);
     }
 
-        /* Pijltjes alleen zichtbaar bij current, of altijd? 
-   Vraag: "pijltje mag voor en na... automatisch aanpassen"
-   We doen ze bij de actieve halte zichtbaar. */
-        .route-item.is-current::before,
-        .route-item.is-current::after {
+        .route-item.is-current::before, .route-item.is-current::after {
             opacity: 1;
         }
 
-/* BIER OVERLAY (ongewijzigd, alleen responsive check) */
+/* BIER OVERLAY */
 #bier-overlay {
     display: none;
     position: fixed;
@@ -347,18 +338,19 @@ main {
     }
 }
 
-/* Responsive */
 @media (max-width: 900px) {
     .board-grid {
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 1fr;
     }
 
-    .header-logo {
-        height: 60px;
+    .header-content {
+        flex-direction: column;
+        gap: 5px;
     }
 
     #titel {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
+        text-align: center;
     }
 }

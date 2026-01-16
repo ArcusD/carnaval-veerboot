@@ -4,13 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Eesjte Zittesje Vaerdeins</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2">
 </head>
 
 <body class="carnaval">
     <header class="topbar">
-        <div id="titel-container">
-            <img class="header-logo" src="{{ url_for('static', filename='cv-logo.png') }}" alt="Logo">
+        <div class="header-content">
+            <img class="header-logo"
+                 src="{{ url_for('static', filename='cv-logo.png') }}"
+                 alt="Logo"
+                 style="height: 12vh; max-height: 110px; width: auto;">
+
             <div id="titel">CV Opnuuj Begoosj: Eesjte Zittesje Vaerdeins</div>
         </div>
     </header>
