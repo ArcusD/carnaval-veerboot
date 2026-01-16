@@ -1,5 +1,4 @@
 :root {
-    /* Zelfde kleuren, rood iets feller gemaakt voor de pijlen */
     --rood: #e60000;
     --geel: #ffd400;
     --greun: #009933;
@@ -20,21 +19,24 @@ body {
     flex-direction: column;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     color: var(--zwart);
+    /* Confetti achtergrond */
     background: radial-gradient(circle, rgba(212,0,0,.95) 0 5px, transparent 6px) 0 0/70px 70px, radial-gradient(circle, rgba(0,153,51,.95) 0 5px, transparent 6px) 22px 34px/86px 86px, radial-gradient(circle, rgba(255,212,0,.95) 0 5px, transparent 6px) 44px 10px/78px 78px, radial-gradient(circle, rgba(16,16,21,.35) 0 4px, transparent 5px) 12px 58px/110px 110px, radial-gradient(circle at 20% 12%, rgba(255,255,255,.55), transparent 55%), radial-gradient(circle at 85% 25%, rgba(255,255,255,.35), transparent 60%), linear-gradient(180deg, var(--geel) 0%, rgba(255,239,133,1) 45%, var(--geel) 100%);
     background-attachment: fixed;
 }
 
-/* --- HEADER AANGEPAST --- */
+/* --- HEADER FIX --- */
 .topbar {
     position: relative;
-    height: 16vh;
-    min-height: 90px;
-    max-height: 140px;
-    /* BELANGRIJK: Dit duwt logo en tekst uit elkaar */
-    justify-content: space-between;
-    padding: 5px 3vw; /* Iets meer ruimte aan de zijkanten */
+    /* Balk iets hoger gemaakt voor ruimte */
+    height: 20vh;
+    min-height: 110px;
+    max-height: 180px;
     display: flex;
     align-items: center;
+    justify-content: space-between; /* Duwt logo links, tekst rechts */
+
+    padding: 0 2vw; /* Minimale padding zijkant */
+
     background: repeating-linear-gradient( 45deg, var(--rood) 0 28px, var(--geel) 28px 56px, var(--greun) 56px 84px );
     box-shadow: 0 6px 25px rgba(0,0,0,.40);
     z-index: 10;
@@ -48,9 +50,15 @@ body {
         pointer-events: none;
     }
 
+.logo-container {
+    height: 100%; /* Volle hoogte */
+    padding: 5px 0; /* Klein beetje ademruimte boven/onder */
+    display: flex;
+    align-items: center;
+}
+
 .header-logo {
-    /* Staat ook in HTML, maar voor de zekerheid */
-    height: 85% !important;
+    height: 100%;
     width: auto;
     object-fit: contain;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
@@ -60,57 +68,54 @@ body {
 #titel {
     font-weight: 950;
     text-transform: uppercase;
-    /* Tekst rechts uitlijnen */
     text-align: right;
-    font-size: clamp(1.8rem, 4.0vw, 4.5rem);
-    line-height: 1.1;
+    /* Zorg dat tekst nooit wrapt */
+    white-space: nowrap;
+    /* Dynamische grootte, maar maximaal passend */
+    font-size: clamp(1.5rem, 4.5vw, 5.5rem);
+    line-height: 1;
     color: var(--wit);
     text-shadow: 0 4px 0 rgba(0,0,0,.5), 0 10px 25px rgba(0,0,0,.5);
-    -webkit-text-stroke: 1.5px rgba(0,0,0,.4);
+    -webkit-text-stroke: 2px rgba(0,0,0,.4);
     z-index: 2;
-    max-width: 65%; /* Voorkom dat tekst over logo gaat bij smal scherm */
+    flex: 1; /* Neemt overige ruimte in */
+    margin-left: 20px; /* Afstand tot logo */
 }
 
-/* --- MAIN NIEUWE LAYOUT --- */
+/* --- MAIN --- */
 main {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: min(3vh, 30px) min(3vw, 30px);
+    padding: min(3vh, 30px);
     overflow: hidden;
 }
 
-.board {
+.board { /* Niet direct gebruikt in HTML nu, maar voor zekerheid */
     width: 100%;
-    max-width: 1600px;
     height: 100%;
-    border-radius: 35px;
-    background: rgba(255,255,255,.35);
-    border: 4px solid rgba(0,0,0,.1);
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(15px);
-    display: flex;
-    flex-direction: column;
-    padding: 30px;
 }
 
 .central-dashboard {
-    flex: 1;
+    width: 100%;
+    max-width: 1700px;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    gap: min(4vh, 40px); /* Ruimte tussen groot en klein vak */
+    gap: 3vh;
 }
 
-/* HET GROTE VAK */
+/* GROTE VAK */
 .huge-stop-container {
-    flex: 2; /* Neemt 2/3 van de ruimte in */
+    flex: 2.5; /* Iets meer ruimte dan onderkant */
     display: flex;
     flex-direction: column;
-    background: rgba(255,255,255,.3);
-    border: 3px solid rgba(0,0,0,.08);
-    border-radius: 25px;
-    box-shadow: 0 15px 35px rgba(0,0,0,.15);
+    background: rgba(255,255,255,.35);
+    border: 4px solid rgba(0,0,0,.1);
+    border-radius: 30px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(15px);
     padding: 20px;
     overflow: hidden;
 }
@@ -121,9 +126,9 @@ main {
     text-transform: uppercase;
     font-size: clamp(1.5rem, 3vw, 2.5rem);
     color: var(--wit);
-    text-shadow: 0 3px 8px rgba(0,0,0,.4);
-    -webkit-text-stroke: 1px rgba(0,0,0,.3);
-    margin-bottom: 10px;
+    text-shadow: 0 3px 8px rgba(0,0,0,.5);
+    -webkit-text-stroke: 1px rgba(0,0,0,.4);
+    margin-bottom: 15px;
 }
 
 .resize-wrap {
@@ -134,10 +139,9 @@ main {
     justify-content: center;
     width: 100%;
     overflow: hidden;
-    /* Gele rand om het grote vak */
-    background: linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,.2));
-    border: 6px solid rgba(255,212,0,0.7);
-    box-shadow: 0 20px 50px rgba(0,0,0,.2);
+    background: linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,.3));
+    border: 6px solid rgba(255,212,0,0.8);
+    box-shadow: inset 0 0 30px rgba(0,0,0,.1);
     border-radius: 20px;
     padding: 10px;
 }
@@ -152,58 +156,57 @@ main {
     text-align: center;
 }
 
-/* DE SECUNDAIRE REGEL (Vorige -> Volgende) */
+/* ONDERSTE BALK AANGEPAST */
 .secondary-row {
-    flex: 1; /* Neemt 1/3 van de ruimte in */
-    max-height: 25vh; /* Niet te hoog worden */
+    flex: 1;
+    display: flex;
+    justify-content: space-between; /* Links en Rechts uit elkaar */
+    gap: 30px;
+}
+
+.sec-group {
+    flex: 1;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 20px;
-    background: rgba(0,0,0,.06);
+    background: rgba(255,255,255,.4);
+    border: 3px solid rgba(0,0,0,.1);
     border-radius: 20px;
-    padding: 15px 30px;
-    border: 2px solid rgba(255,255,255,.2);
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+    backdrop-filter: blur(10px);
+    padding: 10px 25px;
+    overflow: hidden;
 }
 
-.sec-stop-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1; /* Verdeel ruimte eerlijk */
-    max-width: 45%;
+.group-left {
+    justify-content: flex-start;
 }
 
-.sec-label {
-    font-size: clamp(0.8rem, 1.5vw, 1.2rem);
-    text-transform: uppercase;
-    font-weight: 900;
-    opacity: 0.7;
-    margin-bottom: 5px;
+.group-right {
+    justify-content: flex-end;
 }
 
 .sec-name {
-    font-size: clamp(1.5rem, 4vw, 3.5rem);
-    font-weight: 950;
+    flex: 1;
+    font-size: clamp(1.5rem, 3.5vw, 3.0rem);
+    font-weight: 900;
     text-transform: uppercase;
     color: var(--zwart);
-    text-shadow: 1px 1px 0 rgba(255,255,255,.8);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 100%;
     text-align: center;
+    padding: 0 15px;
 }
 
-.sec-separator {
-    font-size: clamp(3rem, 6vw, 5rem);
-    font-weight: 1000;
+.arrow-icon {
+    font-size: clamp(3rem, 5vw, 4.5rem);
     color: var(--rood);
-    filter: drop-shadow(0 4px 4px rgba(0,0,0,.3));
-    padding-bottom: 10px; /* Visuele correctie */
+    text-shadow: 0 2px 5px rgba(0,0,0,.3);
+    line-height: 1;
+    flex-shrink: 0; /* Pijl mag niet krimpen */
 }
 
-/* Animaties */
+/* Animaties en Bier Overlay */
 .pop {
     animation: popIn .5s cubic-bezier(0.25, 1.5, 0.5, 1);
 }
@@ -222,7 +225,6 @@ main {
     }
 }
 
-/* BIER (Ongewijzigd, voor de zekerheid meegeleverd) */
 #bier-overlay {
     display: none;
     position: fixed;
@@ -280,36 +282,32 @@ main {
     }
 }
 
-/* MOBIEL */
-@media (max-width: 800px) {
-    /* Op mobiel titel en logo stapelen, anders past het niet */
+@media (max-width: 900px) {
     .topbar {
         flex-direction: column;
-        gap: 10px;
         height: auto;
         padding: 15px;
+        text-align: center;
     }
 
     .header-logo {
-        height: 60px !important;
+        height: 80px;
+        width: auto;
     }
 
     #titel {
         text-align: center;
-        max-width: 100%;
-        font-size: 1.8rem;
-    }
-
-    .board {
-        padding: 15px;
+        font-size: 2rem;
+        white-space: normal;
+        margin-left: 0;
     }
 
     .secondary-row {
+        flex-direction: column;
         gap: 10px;
-        padding: 15px;
     }
 
-    .sec-name {
-        font-size: 1.8rem;
+    .sec-group {
+        justify-content: center;
     }
 }
