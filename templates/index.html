@@ -4,41 +4,43 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Eesjte Zittesje Vaerdeins</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=3">
 </head>
 
 <body class="carnaval">
     <header class="topbar">
-        <div class="header-content">
-            <img class="header-logo"
-                 src="{{ url_for('static', filename='cv-logo.png') }}"
-                 alt="Logo"
-                 style="height: 12vh; max-height: 110px; width: auto;">
+        <img class="header-logo"
+             src="{{ url_for('static', filename='cv-logo.png') }}"
+             alt="Logo"
+             style="height: 85%; width: auto;">
 
-            <div id="titel">CV Opnuuj Begoosj: Eesjte Zittesje Vaerdeins</div>
-        </div>
+        <div id="titel">CV Opnuuj Begoosj: Eesjte Zittesje Vaerdeins</div>
     </header>
 
     <main>
         <section class="board" role="region" aria-label="Veerdèins-infoo">
-            <div class="board-grid">
+            <div class="central-dashboard">
 
-                <div class="panel panel-current">
-                    <div class="current-head">
-                        <div class="label" id="volgende-tekst">Völgende sjtop</div>
-                    </div>
-
-                    <div class="current-name-wrap" id="halte-wrap" aria-label="Völgende sjtop">
-                        <div id="huidige-halte">Laje...</div>
+                <div class="huge-stop-container">
+                    <div class="huge-label">Völgende sjtop:</div>
+                    <div id="huge-wrap" class="resize-wrap">
+                        <div id="huge-text" class="pop">Laje...</div>
                     </div>
                 </div>
 
-                <aside class="panel panel-route" aria-label="Sjtoppe">
-                    <div class="route-title">Sjtoppe</div>
-                    <div class="route-window" id="route-window">
-                        <ul id="halte-lijst" class="route-list" aria-label="Lies vaan sjtoppe"></ul>
+                <div class="secondary-row">
+                    <div class="sec-stop-wrap">
+                        <span class="sec-label">Veurige:</span>
+                        <span id="prev-text" class="sec-name">—</span>
                     </div>
-                </aside>
+
+                    <div class="sec-separator">➜</div>
+
+                    <div class="sec-stop-wrap sec-next">
+                        <span class="sec-label">Hie-nao:</span>
+                        <span id="next-text" class="sec-name">—</span>
+                    </div>
+                </div>
 
             </div>
         </section>
@@ -51,6 +53,6 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=3"></script>
 </body>
 </html>

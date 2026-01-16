@@ -1,166 +1,118 @@
 (() => {
-    const FETCH_MS = 20000;
-    const BIER_MS = 1500;
-    const CONFIG_MS = 15000;
+    // Instellingen
+    const FETCH_MS = 20000; // Checken voor nieuwe haltes lijst
+    const BIER_MS = 1500;  // Checken voor bier alarm
+    const CONFIG_MS = 15000; // Checken voor rotatie snelheid
 
-    const elLabel = document.getElementById('volgende-tekst');
-    const elWrap = document.getElementById('halte-wrap');
-    const elHalte = document.getElementById('huidige-halte');
+    // Elementen ophalen (Nieuwe ID's)
+    const elHugeText = document.getElementById('huge-text');
+    const elHugeWrap = document.getElementById('huge-wrap');
 
-    const elRouteWin = document.getElementById('route-window');
-    const elRouteLst = document.getElementById('halte-lijst');
+    const elPrevText = document.getElementById('prev-text');
+    const elNextText = document.getElementById('next-text');
 
     const elBierOverlay = document.getElementById('bier-overlay');
     const elBierNaam = document.getElementById('bier-naam-tekst');
 
-    if (!elHalte || !elRouteLst) return;
+    // Stop als belangrijke elementen missen
+    if (!elHugeText || !elPrevText || !elNextText) {
+        console.error("HTML elementen niet gevonden. Check index.html.");
+        return;
+    }
 
+    // Status variabelen
     let haltes = [];
     let idx = 0;
     let lastJson = "";
-    let builtFor = "";
 
     let rotateMs = 5500;
     let rotateTimer = null;
 
+    // Hulpfunctie om tekst schoon te maken
     const clean = (v) => (v ?? "").toString().trim();
 
-    // Resize logica (past tekst aan zodat het op 1 regel blijft)
-    function fitToBox(elText, elBox, minPx = 14, maxPx = 150) {
+    // FUNCTIE: Tekst passend maken in een container
+    // Alleen nodig voor de GROTE tekst
+    function fitToBox(elText, elBox, minPx = 40, maxPx = 500) {
         if (!elText || !elBox) return;
+
+        // Begin met een enorme lettergrootte
         elText.style.fontSize = maxPx + "px";
 
         let size = maxPx;
-        const boxW = elBox.clientWidth;
-        const boxH = elBox.clientHeight || 100;
+        // Gebruik de breedte van de container (minus wat padding veiligheid)
+        const boxW = elBox.clientWidth * 0.96;
+        const boxH = elBox.clientHeight * 0.90 || 200;
 
-        // Simpele loop om te verkleinen
+        // Simpele loop: maak kleiner zolang het niet past
         while (size > minPx) {
-            // 95% breedte marge
-            if (elText.scrollWidth <= boxW * 0.95 && elText.scrollHeight <= boxH) {
-                break;
+            // Check of de tekst breder of hoger is dan de container
+            if (elText.scrollWidth <= boxW && elText.scrollHeight <= boxH) {
+                break; // Het past!
             }
+            // Maak 10% kleiner en probeer opnieuw
             size = size * 0.90;
             elText.style.fontSize = size + "px";
         }
     }
 
-    function resizeAllRouteItems() {
-        const items = elRouteLst.querySelectorAll('.route-item');
-        items.forEach(li => {
-            const span = li.querySelector('.txt');
-            if (span) {
-                span.style.fontSize = "3.5rem"; // Start groot
-                let safety = 20;
-                while (safety-- > 0) {
-                    // 75% breedte ivm pijltjes links/rechts
-                    if (span.scrollWidth < li.clientWidth * 0.75) break;
-                    const cur = parseFloat(getComputedStyle(span).fontSize);
-                    if (cur < 12) break;
-                    span.style.fontSize = (cur * 0.90) + "px";
-                }
-            }
-        });
-    }
-
+    // Animatie effect
     function pop(el) {
         el.classList.remove('pop');
-        void el.offsetWidth;
+        void el.offsetWidth; // Forceer repaint
         el.classList.add('pop');
     }
 
+    // Timer beheer
     function startRotateTimer() {
         if (rotateTimer) clearInterval(rotateTimer);
         rotateTimer = setInterval(rotate, rotateMs);
     }
 
-    async function fetchConfig() {
-        try {
-            const r = await fetch('/api/config', { cache: 'no-store' });
-            const cfg = await r.json();
-            const newMs = Number(cfg?.rotate_ms);
-            if (Number.isFinite(newMs) && newMs >= 1000 && newMs <= 60000 && newMs !== rotateMs) {
-                rotateMs = newMs;
-                startRotateTimer();
-            }
-        } catch (e) { }
-    }
-
-    function buildRouteListIfNeeded() {
-        const key = JSON.stringify(haltes);
-        if (key === builtFor) return;
-        builtFor = key;
-
-        elRouteLst.innerHTML = "";
-        haltes.forEach((h, i) => {
-            const li = document.createElement('li');
-            li.className = 'route-item';
-            li.dataset.idx = String(i);
-
-            const span = document.createElement('span');
-            span.className = 'txt';
-            span.textContent = clean(h) || "—";
-
-            li.appendChild(span);
-            elRouteLst.appendChild(li);
-        });
-
-        requestAnimationFrame(() => {
-            resizeAllRouteItems();
-            centerCurrent(true);
-        });
-    }
-
-    function centerCurrent(skipTransition = false) {
-        if (!elRouteWin || !elRouteLst) return;
-        const cur = elRouteLst.querySelector(`.route-item[data-idx="${idx}"]`);
-        if (!cur) return;
-
-        elRouteLst.style.transition = skipTransition ? "none" : "";
-
-        const centerY = elRouteWin.clientHeight / 2;
-        const target = centerY - (cur.offsetTop + cur.offsetHeight / 2);
-        elRouteLst.style.transform = `translate3d(0, ${target}px, 0)`;
-
-        if (skipTransition) requestAnimationFrame(() => { elRouteLst.style.transition = ""; });
-    }
-
-    function markRoute() {
-        const items = elRouteLst.querySelectorAll('.route-item');
-        items.forEach((li) => {
-            li.classList.remove('is-current');
-            const i = Number(li.dataset.idx);
-            if (i === idx) li.classList.add('is-current');
-        });
-    }
-
+    // --- HOOFDFUNCTIE: Render de teksten ---
     function render() {
-        if (!Array.isArray(haltes) || haltes.length === 0) {
-            elLabel.textContent = "Völgende sjtop";
-            elHalte.textContent = "Gein sjtoppe";
-            elRouteLst.innerHTML = "";
-            fitToBox(elHalte, elWrap, 20, 200);
+        const total = haltes.length;
+
+        if (total === 0) {
+            elHugeText.textContent = "Gein sjtoppe";
+            elPrevText.textContent = "—";
+            elNextText.textContent = "—";
+            fitToBox(elHugeText, elHugeWrap);
             return;
         }
 
-        if (idx >= haltes.length) idx = 0;
+        // Zorg dat index geldig blijft
+        if (idx >= total) idx = 0;
 
-        elLabel.textContent = "Völgende sjtop";
-        elHalte.textContent = clean(haltes[idx]) || "—";
+        // 1. Huidige (Grote) Halte
+        elHugeText.textContent = clean(haltes[idx]) || "—";
 
-        buildRouteListIfNeeded();
-        markRoute();
-        centerCurrent(false);
-        fitToBox(elHalte, elWrap, 20, 300);
+        // 2. Vorige Halte (Index - 1). De modulo truc handelt negatieve getallen af.
+        const idxPrev = ((idx - 1) % total + total) % total;
+        elPrevText.textContent = clean(haltes[idxPrev]) || "—";
+
+        // 3. Volgende Halte (Index + 1). Modulo handelt 'wraparound' naar 0 af.
+        const idxNext = (idx + 1) % total;
+        elNextText.textContent = clean(haltes[idxNext]) || "—";
+
+        // Pas de grootte van de grote tekst aan
+        // We wachten heel even zodat de browser de nieuwe tekstbreedte kent
+        requestAnimationFrame(() => {
+            fitToBox(elHugeText, elHugeWrap);
+        });
     }
 
+    // --- Rotatie Logica ---
     function rotate() {
-        if (!Array.isArray(haltes) || haltes.length === 0) return render();
+        if (haltes.length === 0) return render();
+        // Naar volgende index
         idx = (idx + 1) % haltes.length;
-        pop(elHalte);
+        // Animatie op de grote tekst
+        pop(elHugeText);
         render();
     }
 
+    // --- API Functies ---
     async function fetchHaltes() {
         try {
             const r = await fetch('/api/haltes', { cache: 'no-store' });
@@ -168,17 +120,30 @@
             if (!Array.isArray(data)) return;
 
             const json = JSON.stringify(data);
+            // Alleen updaten als de lijst echt veranderd is
             if (json !== lastJson) {
                 lastJson = json;
                 haltes = data;
-                builtFor = "";
-                idx = (haltes.length ? (idx % haltes.length) : 0);
-                pop(elHalte);
+                // Reset index als de lijst korter is geworden
+                if (idx >= haltes.length) idx = 0;
+
+                pop(elHugeText);
                 render();
             }
-        } catch (e) {
-            console.log("Error:", e);
-        }
+        } catch (e) { console.error("Fout bij haltes ophalen:", e); }
+    }
+
+    async function fetchConfig() {
+        try {
+            const r = await fetch('/api/config', { cache: 'no-store' });
+            const cfg = await r.json();
+            const newMs = Number(cfg?.rotate_ms);
+            // Update snelheid alleen als het een geldige, nieuwe waarde is
+            if (Number.isFinite(newMs) && newMs >= 1000 && newMs <= 60000 && newMs !== rotateMs) {
+                rotateMs = newMs;
+                startRotateTimer();
+            }
+        } catch (e) { }
     }
 
     async function checkBierStatus() {
@@ -196,21 +161,22 @@
         } catch (e) { }
     }
 
+    // --- Start alles op ---
     fetchConfig();
     setInterval(fetchConfig, CONFIG_MS);
 
     fetchHaltes();
     setInterval(fetchHaltes, FETCH_MS);
 
+    // Initiële render
     render();
     startRotateTimer();
 
     checkBierStatus();
     setInterval(checkBierStatus, BIER_MS);
 
+    // Resize tekst als het venster van grootte verandert
     window.addEventListener('resize', () => {
-        resizeAllRouteItems();
-        centerCurrent(true);
-        fitToBox(elHalte, elWrap, 20, 300);
+        fitToBox(elHugeText, elHugeWrap);
     });
 })();
